@@ -2,62 +2,53 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' show get;
-import 'package:karma_app/models/event.dart';
-import 'package:karma_app/screens/home.dart';
-import 'package:karma_app/screens/detail.dart';
+import 'package:http/http.dart' as http;
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:karma_app/view/login.dart';
+import 'package:karma_app/view/register.dart';
+import 'view/dashboard.dart';
 
-class CustomListView extends StatelessWidget {
-  final List<Event> events;
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  //dynamic token = FlutterSession().get('token');
+  dynamic token = '';
 
-  CustomListView(this.events);
-
-  Widget build(context) {
-    return ListView.builder(
-      itemCount: events.length,
-      itemBuilder: (context, int currentIndex) {
-        return createViewItem(events[currentIndex], context);
-      },
-    );
-  }
+  runApp(MaterialApp(
+    home: token != '' ? DashBoard() : MyApp(),
+  ));
 }
+
+// Future<void> main() async {
+//   WidgetsFlutterBinding.ensureInitialized();
+//   SharedPreferences prefs = await SharedPreferences.getInstance();
+//   var email = prefs.getString('res');
+//   print(email);
+//   runApp(MaterialApp(home: email == null ? DashBoard() : MyApp()));
+// }
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
       theme: new ThemeData(
-        primarySwatch: Colors.deepOrange,
+        primarySwatch: Colors.green,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: new Scaffold(
-        appBar: new AppBar(title: const Text('Karma')),
-        body: new Center(
-          //FutureBuilder is a widget that builds itself based on the latest snapshot
-          // of interaction with a Future.
-          child: new FutureBuilder<List<Event>>(
-            future: downloadJSON(),
-            //we pass a BuildContext and an AsyncSnapshot object which is an
-            //Immutable representation of the most recent interaction with
-            //an asynchronous computation.
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                List<Event>? events = snapshot.data;
-                return new CustomListView(events!);
-              } else if (snapshot.hasError) {
-                return Text('${snapshot.error}');
-              }
-              //return  a circular progress indicator.
-              return new CircularProgressIndicator();
-            },
-          ),
-        ),
-      ),
+      home: const Login(),
     );
   }
 }
 
-void main() {
-  runApp(MyApp());
-}
-//end
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({Key? key}) : super(key: key);
 
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  @override
+  Widget build(BuildContext context) {
+     return Container();
+  }
+}

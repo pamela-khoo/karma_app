@@ -9,7 +9,8 @@ class Constants
     static $PASSWORD="";
 
     //STATEMENTS
-    static $SQL_SELECT_ALL="SELECT * FROM events";
+    static $SQL_SELECT_ALL="SELECT * FROM events JOIN organization ON events.organization=organization.id";
+
 
 }
 
@@ -51,7 +52,7 @@ class Event
                     array_push($event, array("id"=>$row['id'],"name"=>$row['name'],
                     "start_date"=>$row['start_date'],"end_date"=>$row['end_date'],"time"=>$row['time'],
                     "description"=>$row['description'],"status"=>$row['status'],"venue"=>$row['venue'],
-                    "category"=>$row['category'],"organization"=>$row['organization'],
+                    "category"=>$row['category'],"organization"=>$row['org_name'],
                     "points"=>$row['points'],"image_url"=>$row['image_url']));
                 }
                 print(json_encode(array_reverse($event)));
@@ -66,6 +67,7 @@ class Event
         }
     }
 }
+
 $event=new Event();
 $event->select();
 
