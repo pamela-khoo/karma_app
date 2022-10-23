@@ -17,19 +17,24 @@ class SecondScreen extends StatefulWidget {
 }
 
 class _SecondScreenState extends State<SecondScreen> {
+
   Future join() async {
     //IP address
     var url = Uri.http("192.168.101.116",
         '/karma/karma_app/lib/database/event.php', {'q': '{http}'});
     var response = await http.post(url, body: {
       //TODO: Get user id....
-      "user_id":"1", 
-      "event_id":widget.value.id,
+      "user_id":"1",
+      "event_id":"2",
+      //"event_id":widget.value.id,
     });
+
+    //TODO: throwing error bc response.body is null -> cannot get event id
+    print(response.body);
 
     var data = json.decode(response.body);
     if (data == "Error") {
-      //TODO: switch button to show already joined 
+      //TODO: switch button to show already joined
       Fluttertoast.showToast(
         backgroundColor: Colors.orange,
         textColor: Colors.white,
@@ -118,7 +123,7 @@ class _SecondScreenState extends State<SecondScreen> {
                 padding: EdgeInsets.all(20.0),
               ),
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   // Respond to button press
                   join();
                 },

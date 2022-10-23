@@ -29,11 +29,11 @@ class DashBoard extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Dashboard'),
         automaticallyImplyLeading: false),
-      body: new Center(
+      body: Center(
           //FutureBuilder is a widget that builds itself based on the latest snapshot
           // of interaction with a Future.
           child: 
-          new FutureBuilder<List<Event>>(
+          FutureBuilder<List<Event>>(
             future:  downloadJSON(),
             //we pass a BuildContext and an AsyncSnapshot object which is an
             //Immutable representation of the most recent interaction with

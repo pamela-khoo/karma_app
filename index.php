@@ -10,6 +10,8 @@ class Constants
 
     //STATEMENTS
     static $SQL_SELECT_ALL="SELECT * FROM events JOIN organization ON events.organization=organization.id";
+    //static $SQL_SELECT_MISSION="SELECT * FROM mission JOIN events ON mission.event_id=events.id";
+
 
 
 }
@@ -71,4 +73,58 @@ class Event
 $event=new Event();
 $event->select();
 
-//end
+// //Mission
+// class Mission
+// {
+//     /*******************************************************************************************************************************************/
+//     /*
+//        1.CONNECT TO DATABASE.
+//        2. RETURN CONNECTION OBJECT
+//     */
+//     public function connect()
+//     {
+//         $con=new mysqli(Constants::$DB_SERVER,Constants::$USERNAME,Constants::$PASSWORD,Constants::$DB_NAME);
+//         if($con->connect_error)
+//         {
+//             // echo "Unable To Connect"; - For debug
+//             return null;
+//         }else
+//         {
+//             //echo "Connected"; - For debug
+//             return $con;
+//         }
+//     }
+//     /*******************************************************************************************************************************************/
+//     /*
+//        1.SELECT FROM DATABASE.
+//     */
+//     public function select()
+//     {
+//         $con=$this->connect();
+//         if($con != null)
+//         {
+//             $result=$con->query(Constants::$SQL_SELECT_MISSION);
+//             if($result->num_rows>0)
+//             {
+//                 $mission=array();
+//                 while($row=$result->fetch_array())
+//                 {
+//                     array_push($mission, array("id"=>$row['id'],"user_id"=>$row['user_id'],
+//                     "event_id"=>$row['event_id'],"created_at"=>$row['created_at'],
+//                     "event_name"=>$row['name']));
+//                 }
+//                 print(json_encode(array_reverse($mission)));
+//             }else
+//             {
+//                 print(json_encode(array("PHP EXCEPTION : CAN'T RETRIEVE FROM MYSQL. ")));
+//             }
+//             $con->close();
+
+//         }else{
+//             print(json_encode(array("PHP EXCEPTION : CAN'T CONNECT TO MYSQL. NULL CONNECTION.")));
+//         }
+//     }
+// }
+
+// $mission=new Mission();
+// $mission->select();
