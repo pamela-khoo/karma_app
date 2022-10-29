@@ -2,8 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:karma_app/main.dart';
 import 'package:karma_app/view/DashBoard.dart';
-import 'package:karma_app/view/mission.dart';
-import 'package:karma_app/view/profile.dart';
+import 'package:karma_app/view/view_home.dart';
+import 'package:karma_app/view/view_mission.dart';
+import 'package:karma_app/view/view_profile.dart';
 
 class BottomView extends StatefulWidget {
   @override
@@ -13,7 +14,7 @@ class BottomView extends StatefulWidget {
 class _BottomViewState extends State<BottomView> {
   int currentIndex = 0;
 
-  List<Widget> body = [DashBoard(), Mission(), Profile()];
+  List<Widget> body = [HomeView(), MissionView(), ProfileView()];
   
   @override
   Widget build(BuildContext context) {

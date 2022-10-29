@@ -4,6 +4,7 @@ session_start();
 
 
  $db = mysqli_connect('localhost','root','','karma_db');
+
  $email = $_POST['email'];
  $password = $_POST['password'];
 

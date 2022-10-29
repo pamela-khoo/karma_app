@@ -4,10 +4,10 @@ import 'package:flutter_session/flutter_session.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:karma_app/view/bottom_view.dart';
-import 'package:karma_app/view/my_shared.dart';
+import 'package:karma_app/widget/router.dart';
+import 'package:karma_app/widget/shared_pref.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:karma_app/view/register.dart';
-import 'dashboard.dart';
 import '../main.dart';
 
 class Login extends StatefulWidget {
@@ -30,9 +30,7 @@ class _LoginState extends State<Login> {
       "password": pass.text,
     });
 
-    print(response.body);
-
-    var data = json.decode(response.body);
+    var data = jsonDecode(response.body);
 
     if (data[3].toString() == "Success") {
       await FlutterSession().set('token', user.text);
@@ -44,7 +42,9 @@ class _LoginState extends State<Login> {
         toastLength: Toast.LENGTH_SHORT,
       );
 
-      prefLogin(id: data[0], name: "data[1]", email: "data[2]");
+      //Store data to shared preferences
+      prefLogin(id: data[0], name: data[1], email: data[2]);
+      // user id --> prefLoad to retrieve
 
       Navigator.push(
         context,
@@ -62,10 +62,13 @@ class _LoginState extends State<Login> {
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
-    //prefLoad().value
+  void getValues() async {
+    SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
+
+    //Get value
+    String user_name = sharedPrefs.getString('user_name');
+
+    print('HELLOS + ${user_name}');
   }
 
   bool isPasswordVisible = false;
@@ -203,9 +206,7 @@ class _LoginState extends State<Login> {
                 GestureDetector(
                   onTap: () async {
                     login();
-                    SharedPreferences prefs =
-                        await SharedPreferences.getInstance();
-                    prefs.setString('id', '');
+                    prefLoad();
                   },
                   child: Container(
                     height: 53,
@@ -238,10 +239,11 @@ class _LoginState extends State<Login> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const Register()),
-                    );
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(builder: (context) => const Register()),
+                    // );
+                    pushAndRemove(context, Register());
                   },
                   child: Container(
                     height: 53,

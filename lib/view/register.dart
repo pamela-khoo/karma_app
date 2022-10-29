@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:karma_app/view/login.dart';
-import 'dashboard.dart';
+import 'package:karma_app/view/view_home.dart';
 import '../main.dart';
 
 class Register extends StatefulWidget {
@@ -41,7 +41,7 @@ class _RegisterState extends State<Register> {
       );
       Navigator.push(context,
         MaterialPageRoute(
-          builder: (context) => DashBoard(),
+          builder: (context) => HomeView(),
         ),
       );
     }

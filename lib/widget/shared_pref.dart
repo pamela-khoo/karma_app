@@ -13,3 +13,8 @@ Future prefLoad() async {
   SharedPreferences preferences = await SharedPreferences.getInstance();
   return preferences.getStringList('login');
 }
+
+joinMission(String missionID) async {
+  SharedPreferences preferences = await SharedPreferences.getInstance();
+  return preferences.setString('joinMission', missionID);
+}

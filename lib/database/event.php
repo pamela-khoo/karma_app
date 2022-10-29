@@ -1,29 +1,74 @@
 <?php
-session_start();
 
-$db = mysqli_connect('localhost','root','','karma_db');
+// class Constants
+// {
+//     //DATABASE DETAILS
+//     static $DB_SERVER="localhost";
+//     static $DB_NAME="karma_db";
+//     static $USERNAME="root";
+//     static $PASSWORD="";
 
-$user_id = $_POST['user_id'];
-$event_id = $_POST['event_id'];
+//     //STATEMENTS
+//     static $SQL_SELECT_ALL="SELECT * FROM events JOIN organization ON events.organization=organization.id";
+//     //static $SQL_SELECT_MISSION="SELECT * FROM mission JOIN events ON mission.event_id=events.id";
 
- $sql = "SELECT id FROM mission WHERE user_id = '".$user_id."' AND event_id = '".$event_id."'";
- $result = mysqli_query($db,$sql);
- $count = mysqli_num_rows($result);
- 
- $row = mysqli_fetch_array($result);
 
- if(!empty($row)) 
-    $_SESSION['id'] = $row["id"];
- 
- if($count == 1){
-	$msg = "Error";
-	echo json_encode($msg);
- }else{
-	$insert = "INSERT INTO mission(user_id, event_id) VALUES ('".$user_id."','".$event_id."')";
-	$query = mysqli_query($db,$insert);
-	if($query){
-		$msg = "Success";
- 		echo json_encode($msg);
-	}
-}
-?>
+
+// }
+
+// class Event
+// {
+//     /*******************************************************************************************************************************************/
+//     /*
+//        1.CONNECT TO DATABASE.
+//        2. RETURN CONNECTION OBJECT
+//     */
+//     public function connect()
+//     {
+//         $con=new mysqli(Constants::$DB_SERVER,Constants::$USERNAME,Constants::$PASSWORD,Constants::$DB_NAME);
+//         if($con->connect_error)
+//         {
+//             // echo "Unable To Connect"; - For debug
+//             return null;
+//         }else
+//         {
+//             //echo "Connected"; - For debug
+//             return $con;
+//         }
+//     }
+//     /*******************************************************************************************************************************************/
+//     /*
+//        1.SELECT FROM DATABASE.
+//     */
+//     public function select()
+//     {
+//         $con=$this->connect();
+//         if($con != null)
+//         {
+//             $result=$con->query(Constants::$SQL_SELECT_ALL);
+//             if($result->num_rows>0)
+//             {
+//                 $event=array();
+//                 while($row=$result->fetch_array())
+//                 {
+//                     array_push($event, array("id"=>$row['id'],"name"=>$row['name'],
+//                     "start_date"=>$row['start_date'],"end_date"=>$row['end_date'],"time"=>$row['time'],
+//                     "description"=>$row['description'],"status"=>$row['status'],"venue"=>$row['venue'],
+//                     "category"=>$row['category'],"organization"=>$row['org_name'],
+//                     "points"=>$row['points'],"image_url"=>$row['image_url']));
+//                 }
+//                 print(json_encode(array_reverse($event)));
+//             }else
+//             {
+//                 print(json_encode(array("PHP EXCEPTION : CAN'T RETRIEVE FROM MYSQL. ")));
+//             }
+//             $con->close();
+
+//         }else{
+//             print(json_encode(array("PHP EXCEPTION : CAN'T CONNECT TO MYSQL. NULL CONNECTION.")));
+//         }
+//     }
+// }
+
+// $event=new Event();
+// $event->select();
