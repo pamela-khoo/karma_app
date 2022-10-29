@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:karma_app/main.dart';
-import 'package:karma_app/view/DashBoard.dart';
 import 'package:karma_app/view/view_home.dart';
 import 'package:karma_app/view/view_mission.dart';
 import 'package:karma_app/view/view_profile.dart';
