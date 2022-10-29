@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_session/flutter_session.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
+import 'package:karma_app/controller/api.dart';
 import 'package:karma_app/view/bottom_view.dart';
 import 'package:karma_app/widget/router.dart';
 import 'package:karma_app/widget/shared_pref.dart';
@@ -22,9 +23,7 @@ class _LoginState extends State<Login> {
   TextEditingController pass = TextEditingController();
 
   Future login() async {
-    //IP address
-    var url = Uri.http("192.168.101.116",
-        '/karma/karma_app/lib/database/login.php', {'q': '{http}'});
+    var url = ApiConstant().baseUrl + ApiConstant().login;
     var response = await http.post(url, body: {
       "email": user.text,
       "password": pass.text,
