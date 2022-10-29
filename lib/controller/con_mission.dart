@@ -7,7 +7,8 @@ import 'package:karma_app/model/model_event.dart';
 
 Future<List<Event>> fetchMission(List<Event> fetch, String id) async {
   print(
-      "BASE URL ${ApiConstant().baseUrl + ApiConstant().api + ApiConstant().mission + id}");
+      "BASE URL ${ApiConstant().baseUrl + ApiConstant().api + ApiConstant().mission + id}"); //JSON of joined mission by userID
+
   var request = await Dio().get(ApiConstant().baseUrl +
       ApiConstant().api +
       ApiConstant().mission +

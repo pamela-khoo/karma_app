@@ -3,52 +3,7 @@
  include 'baseurl.php';
  include 'time.php';
 
-// if (isset($_GET['mission'])) { 
-//     $array = array(); 
-//     $query = "SELECT * FROM user ORDER BY id DESC";
-//     $sql = mysqli_query($conn, $query); 
-    
-//     while ($data = mysqli_fetch_assoc($sql)) { 
-
-//         $query = "SELECT * FROM mission JOIN events ON mission.event_id = events.id
-//                 WHERE mission.user_id = '".$data['id']."' ";
-
-//         $missionFetch = mysqli_query($conn, $query);
-
-//         $getMission = [];
-//          foreach ($missionFetch as $key => $value) {
-//              $getMission[$key]['id'] = $value['id'];
-//              $getMission[$key]['image_url'] = $value['image_url'];
-//          }
-
-//         $row['id'] = $data['id']; 
-//         $row['first_name'] = $data['first_name']; 
-//         $row['mission'] = $getMission;
-
-//         array_push($array, $row); 
-//     }
-//     header('Content-Type: application/json; charset=utf-8');
-//     echo str_replace('\\/', '/', json_encode($array, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
-
-// } elseif (isset($_GET['events'])) { 
-//     $array = array(); 
-//     $query = "SELECT * FROM events ORDER BY id DESC";
-//     $sql = mysqli_query($conn, $query); 
-    
-//     while ($data = mysqli_fetch_assoc($sql)) { 
-
-//         $row['id'] = $data['id']; 
-//         $row['name'] = $data['name']; 
-
-//         array_push($array, $row); 
-//     }
-//     header('Content-Type: application/json; charset=utf-8');
-//     echo str_replace('\\/', '/', json_encode($array, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
-
-//     //NEW CODE!!!!!!!!!!
-// } else
-    
-    if (isset($_GET['events_all'])) {
+if (isset($_GET['events_all'])) {
 
     $array = array();
 

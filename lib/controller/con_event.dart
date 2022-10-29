@@ -7,7 +7,7 @@ import 'package:karma_app/model/model_event.dart';
 
 Future<List<Event>> fetchEvent(List<Event> fetch) async {
   print(
-      "BASE URL ${ApiConstant().baseUrl + ApiConstant().api + ApiConstant().eventsAll}");
+      "BASE URL ${ApiConstant().baseUrl + ApiConstant().api + ApiConstant().eventsAll}"); //JSON of all events
   var request = await Dio()
       .get(ApiConstant().baseUrl + ApiConstant().api + ApiConstant().eventsAll);
 
