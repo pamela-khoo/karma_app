@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:karma_app/controller/con_badge.dart';
 import 'package:karma_app/model/model_badge.dart';
 import 'package:karma_app/view/login.dart';
-import 'package:karma_app/view/view_test.dart';
+import 'package:karma_app/view/notification_badge.dart';
 import 'package:karma_app/widget/router.dart';
 import 'package:karma_app/widget/shared_pref.dart';
 import 'package:overlay_support/overlay_support.dart';
