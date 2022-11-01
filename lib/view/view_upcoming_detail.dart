@@ -7,19 +7,20 @@ import 'package:karma_app/controller/con_detail.dart';
 import 'package:karma_app/controller/con_save_mission.dart';
 import 'package:karma_app/model/model_event.dart';
 import 'package:karma_app/widget/shared_pref.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class DetailView extends StatefulWidget {
+class UpcomingDetailView extends StatefulWidget {
   int eventID;
   int status;
 
-  DetailView({required this.eventID, required this.status});
+  UpcomingDetailView({required this.eventID, required this.status});
 
   @override
-  _DetailViewState createState() => _DetailViewState();
+  _UpcomingDetailViewState createState() => _UpcomingDetailViewState();
 }
 
-class _DetailViewState extends State<DetailView> {
+class _UpcomingDetailViewState extends State<UpcomingDetailView> {
   Future<List<Event>>? getDetail;
   List<Event> listDetail = [];
   String id = '', name = '', email = '', checkMission = "0";
@@ -131,7 +132,11 @@ class _DetailViewState extends State<DetailView> {
                             ),
                             padding: EdgeInsets.all(20.0),
                           ),
-                          //favourites button 
+                          //TODO: QR Code
+                          QrImage(
+                            data: 'http://192.168.101.116//karma/karma_web/index.php?action=mission-view&id=${listDetail[index].id}', 
+                            size: 200),
+
                           ElevatedButton(
                               onPressed: () async {
                                 // Respond to button press
@@ -155,10 +160,6 @@ class _DetailViewState extends State<DetailView> {
                                   ? Text('Already Joined Event')
                                   : Text('Join Event')
                           ),
-                          // ElevatedButton(
-                          //   onPressed:() {},
-                          //   child: Text('Event Details'),
-                          // ),
                         ],
                       );
                     })

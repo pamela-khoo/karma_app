@@ -8,4 +8,8 @@ class ApiConstant {
   String joinMission = "utils/join_mission.php";
   String checkMission = "utils/check_mission.php";
   String mission = "mission=";
+  String upcomingMission = "upcoming_mission=";
+  String completedMission = "completed_mission=";
+  String userStats = "user_stats=";
+  String badge = "badge";
 }

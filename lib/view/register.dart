@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:karma_app/controller/api.dart';
+import 'package:karma_app/view/bottom_view.dart';
 import 'package:karma_app/view/login.dart';
 import 'package:karma_app/view/view_home.dart';
 import '../main.dart';
@@ -42,7 +43,7 @@ class _RegisterState extends State<Register> {
       );
       Navigator.push(context,
         MaterialPageRoute(
-          builder: (context) => HomeView(),
+          builder: (context) => BottomView(),
         ),
       );
     }

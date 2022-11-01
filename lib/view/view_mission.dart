@@ -2,7 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:karma_app/controller/con_mission.dart';
 import 'package:karma_app/model/model_event.dart';
+import 'package:karma_app/view/view_completed_detail.dart';
 import 'package:karma_app/view/view_detail.dart';
+import 'package:karma_app/view/view_upcoming_detail.dart';
 import 'package:karma_app/widget/router.dart';
 import 'package:karma_app/widget/shared_pref.dart';
 
@@ -21,8 +23,8 @@ class MissionView extends StatelessWidget {
               borderRadius: BorderRadius.circular(50), 
               color: Colors.greenAccent),
               tabs: [
-                Tab(icon: Icon(Icons.directions_car)),
-                Tab(icon: Icon(Icons.directions_transit)),
+                Tab(icon: Icon(Icons.calendar_today)),
+                Tab(icon: Icon(Icons.check_circle)),
               ],
             ),
             title: const Text('My Volunteer Missions'),
@@ -30,10 +32,10 @@ class MissionView extends StatelessWidget {
           body: TabBarView(
             children: [
               Center(
-                child: MyStatefulWidget(),
+                child: MyUpcomingMission(),
               ),
               Center(
-                child: MyStatefulWidget2(),
+                child: MyCompletedMission(),
               ),
             ],
           ),
@@ -43,15 +45,15 @@ class MissionView extends StatelessWidget {
   }
 }
 
-//Upcoming
-class MyStatefulWidget extends StatefulWidget {
-  const MyStatefulWidget({key});
+//Upcoming Mission
+class MyUpcomingMission extends StatefulWidget {
+  const MyUpcomingMission({key});
 
   @override
-  State<MyStatefulWidget> createState() => _MyStatefulWidgetState();
+  State<MyUpcomingMission> createState() => _MyUpcomingMissionState();
 }
 
-class _MyStatefulWidgetState extends State<MyStatefulWidget> with TickerProviderStateMixin{
+class _MyUpcomingMissionState extends State<MyUpcomingMission> with TickerProviderStateMixin{
   late TabController _tabController;
 
   Future<List<Event>>? getMission;
@@ -69,7 +71,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> with TickerProvider
         id = value[0];
         name = value[1];
         email = value[2];
-        getMission = fetchMission(listMission, id);
+        getMission = fetchUpcomingMission(listMission, id);
       });
     });
   }
@@ -167,7 +169,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> with TickerProvider
                               onTap: () async {
                                 pushPage(
                                     context,
-                                    DetailView(
+                                    UpcomingDetailView(
                                       eventID: listMission[index].id,
                                       status: listMission[index].status,
                                     ));
@@ -183,15 +185,15 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> with TickerProvider
 }
 
 
-//TODO: Completed 
-class MyStatefulWidget2 extends StatefulWidget {
-  const MyStatefulWidget2({key});
+//Completed Mission
+class MyCompletedMission extends StatefulWidget {
+  const MyCompletedMission({key});
 
   @override
-  State<MyStatefulWidget2> createState() => _MyStatefulWidgetState2();
+  State<MyCompletedMission> createState() => _MyCompletedMissionState();
 }
 
-class _MyStatefulWidgetState2 extends State<MyStatefulWidget2> with TickerProviderStateMixin{
+class _MyCompletedMissionState extends State<MyCompletedMission> with TickerProviderStateMixin{
   late TabController _tabController;
 
   Future<List<Event>>? getMission;
@@ -209,7 +211,7 @@ class _MyStatefulWidgetState2 extends State<MyStatefulWidget2> with TickerProvid
         id = value[0];
         name = value[1];
         email = value[2];
-        getMission = fetchMission(listMission, id);
+        getMission = fetchCompletedMission(listMission, id);
       });
     });
   }
@@ -307,7 +309,7 @@ class _MyStatefulWidgetState2 extends State<MyStatefulWidget2> with TickerProvid
                               onTap: () async {
                                 pushPage(
                                     context,
-                                    DetailView(
+                                    CompletedDetailView(
                                       eventID: listMission[index].id,
                                       status: listMission[index].status,
                                     ));

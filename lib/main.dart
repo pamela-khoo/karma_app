@@ -12,25 +12,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  //dynamic token = FlutterSession().get('token');
-  //dynamic token = '';
-
-  // runApp(MaterialApp(
-  //   home: token != '' ? HomeView() : MyApp(),
-  // ));
-  runApp(MyApp());
+  runApp(const KarmaApp());
 }
 
-// Future<void> main() async {
-//   WidgetsFlutterBinding.ensureInitialized();
-//   dynamic token = FlutterSession().get('token');
-//   SharedPreferences prefs = await SharedPreferences.getInstance();
-//   var email = prefs.getString('res');
-
-//   runApp(MaterialApp(home: email == null ? DashBoard() : MyApp()));
-// }
-
-class MyApp extends StatelessWidget {
+class KarmaApp extends StatelessWidget {
+   const KarmaApp({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -43,16 +29,3 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key}) : super(key: key);
-
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  @override
-  Widget build(BuildContext context) {
-    return Container();
-  }
-}

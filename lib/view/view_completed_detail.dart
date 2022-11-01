@@ -9,17 +9,17 @@ import 'package:karma_app/model/model_event.dart';
 import 'package:karma_app/widget/shared_pref.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class DetailView extends StatefulWidget {
+class CompletedDetailView extends StatefulWidget {
   int eventID;
   int status;
 
-  DetailView({required this.eventID, required this.status});
+  CompletedDetailView({required this.eventID, required this.status});
 
   @override
-  _DetailViewState createState() => _DetailViewState();
+  _CompletedDetailViewState createState() => _CompletedDetailViewState();
 }
 
-class _DetailViewState extends State<DetailView> {
+class _CompletedDetailViewState extends State<CompletedDetailView> {
   Future<List<Event>>? getDetail;
   List<Event> listDetail = [];
   String id = '', name = '', email = '', checkMission = "0";
@@ -131,34 +131,7 @@ class _DetailViewState extends State<DetailView> {
                             ),
                             padding: EdgeInsets.all(20.0),
                           ),
-                          //favourites button 
-                          ElevatedButton(
-                              onPressed: () async {
-                                // Respond to button press
-                                await showDialog(
-                                  context: context,
-                                  builder: (myMission) => FutureProgressDialog(
-                                    saveMission(
-                                        context: myMission,
-                                        eventID: widget.eventID.toString(),
-                                        userID: id),
-                                  ),
-                                ).then((value) async {
-                                  preferences = await SharedPreferences.getInstance();
-                                  dynamic fav = preferences.get('saveMission');
-                                  setState(() {
-                                    checkMission = fav;
-                                  });
-                                });
-                              },
-                              child: checkMission == "already"
-                                  ? Text('Already Joined Event')
-                                  : Text('Join Event')
-                          ),
-                          // ElevatedButton(
-                          //   onPressed:() {},
-                          //   child: Text('Event Details'),
-                          // ),
+                          
                         ],
                       );
                     })

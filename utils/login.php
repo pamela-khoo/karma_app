@@ -20,7 +20,6 @@ session_start();
  if($count == 1){
 	$msg = "Success";
 	$array = [$row["id"], $row["first_name"], $row["email"], $msg];
- 	// echo json_encode("Success");
 	echo json_encode($array);
  } 
  else{

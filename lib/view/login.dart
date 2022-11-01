@@ -5,6 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:karma_app/controller/api.dart';
 import 'package:karma_app/view/bottom_view.dart';
+import 'package:karma_app/view/view_home.dart';
 import 'package:karma_app/widget/router.dart';
 import 'package:karma_app/widget/shared_pref.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -43,7 +44,6 @@ class _LoginState extends State<Login> {
 
       //Store data to shared preferences
       prefLogin(id: data[0], name: data[1], email: data[2]);
-      // user id --> prefLoad to retrieve
 
       Navigator.push(
         context,
@@ -61,16 +61,19 @@ class _LoginState extends State<Login> {
     }
   }
 
-  void getValues() async {
-    SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
-
-    //Get value
-    String user_name = sharedPrefs.getString('user_name');
-
-    print('HELLOS + ${user_name}');
-  }
-
   bool isPasswordVisible = false;
+
+  @override
+  void initState() {
+    super.initState();
+    prefLoad().then((value) {
+      setState(() {
+        if (value != null) {
+          pushAndRemove(context, BottomView());
+        }
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
