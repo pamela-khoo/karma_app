@@ -14,7 +14,7 @@ function getCurrentDateTime(){
 }
 function getDateString($date){
     $dateArray = date_parse_from_format('Y/m/d', $date);
-    $monthName = DateTime::createFromFormat('!m', $dateArray['month'])->format('F');
+    $monthName = DateTime::createFromFormat('!m', $dateArray['month'])->format('M');
     return $dateArray['day'] . " " . $monthName  . " " . $dateArray['year'];
 }
 

@@ -10,6 +10,7 @@ class ApiConstant {
   String mission = "mission=";
   String upcomingMission = "upcoming_mission=";
   String completedMission = "completed_mission=";
-  String userStats = "user_stats=";
+  String profile = "profile=";
   String badge = "badge";
+  String registrationLimit = "registration_limit";
 }

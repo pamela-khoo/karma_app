@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:karma_app/controller/con_badge.dart';
 import 'package:karma_app/model/model_badge.dart';
+import 'package:karma_app/view/bottom_view.dart';
 import 'package:karma_app/view/login.dart';
 import 'package:karma_app/view/notification_badge.dart';
 import 'package:karma_app/widget/router.dart';
@@ -116,18 +117,25 @@ class _ProfileViewState extends State<ProfileView> {
     return OverlaySupport(
         child: Scaffold(
             appBar: AppBar(
-              title: Text("Profile"),
-              automaticallyImplyLeading: false,
-              elevation: 0,
-            ),
+        title: const Text('Profile'),
+        automaticallyImplyLeading: false,
+        leading: IconButton(
+          icon: const Icon(Icons.handshake_outlined, color: Colors.white),
+          onPressed: () {
+             Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
+    BottomView()), (Route<dynamic> route) => false);
+          },
+        ),
+      ),
             floatingActionButton: FloatingActionButton(
               onPressed: () async {
                 preferences = await SharedPreferences.getInstance();
                 preferences.remove('login');
-                pushAndRemove(context, Login());
+                Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
+    Login()), (Route<dynamic> route) => false);
               },
               child: Icon(Icons.logout_rounded),
-              backgroundColor: Colors.green,
+              backgroundColor: Colors.teal,
             ),
             body: Column(children: <Widget>[
               Expanded(

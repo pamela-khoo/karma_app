@@ -21,36 +21,36 @@ class _BottomViewState extends State<BottomView> {
       bottomNavigationBar: BottomNavigationBar(
         onTap: whenTap,
         currentIndex: currentIndex,
-        items: const [
+        items: [
           BottomNavigationBarItem(
               icon: Icon(
                 Icons.home_outlined,
-                color: Colors.blueAccent,
+                color: Colors.teal[300],
               ),
               label: 'Home',
               activeIcon: Icon(
                 Icons.home,
-                color: Colors.lightBlueAccent,
+                color: Colors.teal,
               )),
           BottomNavigationBarItem(
               icon: Icon(
                 Icons.leaderboard_outlined,
-                color: Colors.blueAccent,
+                color: Colors.teal[300],
               ),
               label: 'Missions',
               activeIcon: Icon(
                 Icons.leaderboard,
-                color: Colors.lightBlueAccent,
+                color: Colors.teal,
               )),
           BottomNavigationBarItem(
               icon: Icon(
                 Icons.account_circle_outlined,
-                color: Colors.blueAccent,
+                color: Colors.teal[300],
               ),
               label: 'Profile',
               activeIcon: Icon(
                 Icons.account_circle,
-                color: Colors.lightBlueAccent,
+                color: Colors.teal,
               ))
         ],
       ),

@@ -1,7 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
+import 'package:karma_app/controller/api.dart';
 import 'package:karma_app/controller/con_event.dart';
 import 'package:karma_app/model/model_event.dart';
+import 'package:karma_app/view/bottom_view.dart';
 import 'package:karma_app/view/view_detail.dart';
 import 'package:karma_app/widget/router.dart';
 
@@ -13,8 +19,22 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  Future<List<Event>>? getSlider; //TODO: Change variable name
+  Future<List<Event>>? getSlider;
   List<Event> listSlider = [];
+  List<String> months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec"
+  ];
 
   @override
   void initState() {
@@ -22,19 +42,31 @@ class _HomeViewState extends State<HomeView> {
     getSlider = fetchEvent(listSlider);
   }
 
+  //Pull to refresh: get updated list of events 
+  Future refresh() async {
+    setState(() => listSlider.clear());
+      setState(() {
+        getSlider = fetchEvent(listSlider);
+      });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: const Text('Dashboard'), automaticallyImplyLeading: false),
-      body: Center(
-        //FutureBuilder is a widget that builds itself based on the latest snapshot
-        // of interaction with a Future.
+        title: const Text('Dashboard'),
+        automaticallyImplyLeading: false,
+        leading: IconButton(
+          icon: const Icon(Icons.handshake_outlined, color: Colors.white),
+          onPressed: () {
+             Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => BottomView()), (Route<dynamic> route) => false);
+          },
+        ),
+      ),
+      body: RefreshIndicator(
+        onRefresh: refresh,
         child: FutureBuilder<List<Event>>(
           future: getSlider,
-          //we pass a BuildContext and an AsyncSnapshot object which is an
-          //Immutable representation of the most recent interaction with
-          //an asynchronous computation.
           builder: (BuildContext context, AsyncSnapshot<List<Event>> snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               //Display data
@@ -55,17 +87,20 @@ class _HomeViewState extends State<HomeView> {
                             ListTile(
                               leading: Column(
                                 children: <Widget>[
-                                  //TODO: Get date from DB
                                   Text(
-                                    "17",
+                                    DateTime.parse(listSlider[index].startDate)
+                                        .day
+                                        .toString(),
                                     style: TextStyle(
-                                        color: Colors.blue,
+                                        color: Colors.teal[300],
                                         fontSize: 25,
                                         fontWeight: FontWeight.bold),
                                   ),
                                   Text(
-                                    "SEP",
-                                    style: TextStyle(
+                                    months[DateTime.parse(
+                                            listSlider[index].startDate)
+                                        .month],
+                                    style: const TextStyle(
                                         fontSize: 20,
                                         fontWeight: FontWeight.bold),
                                   )
@@ -85,7 +120,10 @@ class _HomeViewState extends State<HomeView> {
                             Row(
                               children: <Widget>[
                                 SizedBox(width: 70),
-                                Icon(Icons.location_city),
+                                Icon(
+                                  Icons.location_city,
+                                  color: Color.fromARGB(255, 237, 137, 170),
+                                ),
                                 SizedBox(width: 10),
                                 Text(
                                   listSlider[index].venue,
@@ -96,14 +134,16 @@ class _HomeViewState extends State<HomeView> {
                             Row(
                               children: <Widget>[
                                 SizedBox(width: 70),
-                                Icon(Icons.star),
+                                Icon(
+                                  Icons.local_attraction_rounded,
+                                  color: Colors.amber[500],
+                                ),
                                 SizedBox(width: 10),
-                                Text(
-                                  listSlider[index]
-                                      .limitRegistration
-                                      .toString(),
-                                  style: TextStyle(),
-                                )
+                                listSlider[index].limitRegistration == 0
+                                    ? Text('Open registration!')
+                                    : Text(
+                                        '${(listSlider[index].limitRegistration - listSlider[index].currentParticipants).toString()} spot(s) left',
+                                      )
                               ],
                             ),
                             SizedBox(height: 10),
@@ -122,7 +162,7 @@ class _HomeViewState extends State<HomeView> {
               );
             } else {
               //Return a circular progress indicator.
-              return new CircularProgressIndicator();
+              return const Center(child: CircularProgressIndicator(),);
             }
           },
         ),

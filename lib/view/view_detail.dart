@@ -1,7 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:future_progress_dialog/future_progress_dialog.dart';
+import 'package:intl/intl.dart';
 import 'package:karma_app/controller/api.dart';
 import 'package:karma_app/controller/con_detail.dart';
 import 'package:karma_app/controller/con_save_mission.dart';
@@ -67,98 +69,143 @@ class _DetailViewState extends State<DetailView> {
                     itemCount: snapshot.data!.length,
                     itemBuilder: (BuildContext context, int index) {
                       return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Padding(
-                            child: new Text(
-                              'EVENT DETAILS',
-                              style: new TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 20.0),
-                              textAlign: TextAlign.center,
+                            padding: const EdgeInsets.all(20.0),
+                            child: Text(
+                              listDetail[index].name,
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 24.0),
                             ),
-                            padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
                           ),
                           Padding(
-                            //`widget` is the current configuration. A State object's configuration
-                            //is the corresponding StatefulWidget instance.
                             child: Image.network(listDetail[index].imageUrl),
-                            padding: EdgeInsets.all(12.0),
+                            padding: EdgeInsets.all(16.0),
                           ),
                           Padding(
-                            child: new Text(
-                              'NAME : ${listDetail[index].name}',
-                              style: new TextStyle(fontWeight: FontWeight.bold),
-                              textAlign: TextAlign.left,
+                            padding: EdgeInsets.only(top: 20.0, left: 20.0),
+                            child: Row(
+                              children: <Widget>[
+                                Icon(
+                                  Icons.calendar_month,
+                                  color: Colors.blue[300],
+                                ),
+                                SizedBox(width: 10),
+                                Text(
+                                  '${listDetail[index].startDate} to ${listDetail[index].endDate}',
+                                  style: TextStyle(),
+                                )
+                              ],
                             ),
-                            padding: EdgeInsets.all(20.0),
+                          ),
+                          //TODO: Time slots
+                          Padding(
+                            padding: EdgeInsets.only(top: 20.0, left: 20.0),
+                            child: Row(
+                              children: <Widget>[
+                                Icon(
+                                  Icons.access_time_filled_sharp,
+                                  color: Colors.indigo[300],
+                                ),
+                                SizedBox(width: 10),
+                                Text(
+                                  '${listDetail[index].startTime} to ${listDetail[index].endTime}',
+                                  style: TextStyle(),
+                                )
+                              ],
+                            ),
                           ),
                           Padding(
-                            child: new Text(
-                              'DESCRIPTION : ${listDetail[index].description}',
-                              style: new TextStyle(fontWeight: FontWeight.bold),
-                              textAlign: TextAlign.left,
+                            padding: EdgeInsets.only(top: 20.0, left: 20.0),
+                            child: Row(
+                              children: <Widget>[
+                                Icon(
+                                  Icons.location_on,
+                                  color: Colors.deepOrange[300],
+                                ),
+                                SizedBox(width: 10),
+                                Text(
+                                  listDetail[index].venue,
+                                  style: TextStyle(),
+                                )
+                              ],
                             ),
-                            padding: EdgeInsets.all(20.0),
                           ),
                           Padding(
-                            child: new Text(
-                              'VENUE : ${listDetail[index].venue}',
-                              style: new TextStyle(fontWeight: FontWeight.bold),
-                              textAlign: TextAlign.left,
+                            padding: EdgeInsets.only(top: 20.0, left: 20.0),
+                            child: Row(
+                              children: <Widget>[
+                                Icon(
+                                  Icons.stars,
+                                  color: Colors.yellow[700],
+                                ),
+                                SizedBox(width: 10),
+                                Text(
+                                  'Earn ${listDetail[index].points.toString()} Karma points',
+                                  style: TextStyle(),
+                                )
+                              ],
                             ),
-                            padding: EdgeInsets.all(20.0),
                           ),
                           Padding(
-                            child: new Text(
-                              'ORGANIZATION : ${listDetail[index].organization}',
-                              style: new TextStyle(fontWeight: FontWeight.bold),
-                              textAlign: TextAlign.left,
-                            ),
                             padding: EdgeInsets.all(20.0),
-                          ),
-                          Padding(
-                            child: new Text(
-                              'DATE : ${listDetail[index].startDate} to ${listDetail[index].endDate}',
-                              style: new TextStyle(fontWeight: FontWeight.bold),
-                              textAlign: TextAlign.left,
+                            child: Row(
+                              children: <Widget>[
+                                Icon(
+                                  Icons.assignment,
+                                  color: Colors.cyan[700],
+                                ),
+                                Expanded(
+                                    child: Html(
+                                  data: listDetail[index].description,
+                                )),
+                              ],
                             ),
-                            padding: EdgeInsets.all(20.0),
                           ),
-                          Padding(
-                            child: new Text(
-                              'TIME : ${listDetail[index].startTime} to ${listDetail[index].endTime}',
-                              style: new TextStyle(fontWeight: FontWeight.bold),
-                              textAlign: TextAlign.left,
-                            ),
-                            padding: EdgeInsets.all(20.0),
-                          ),
-                          //favourites button 
-                          ElevatedButton(
-                              onPressed: () async {
-                                // Respond to button press
-                                await showDialog(
-                                  context: context,
-                                  builder: (myMission) => FutureProgressDialog(
-                                    saveMission(
-                                        context: myMission,
-                                        eventID: widget.eventID.toString(),
-                                        userID: id),
-                                  ),
-                                ).then((value) async {
-                                  preferences = await SharedPreferences.getInstance();
-                                  dynamic fav = preferences.get('saveMission');
-                                  setState(() {
-                                    checkMission = fav;
-                                  });
-                                });
-                              },
-                              child: checkMission == "already"
-                                  ? Text('Already Joined Event')
-                                  : Text('Join Event')
-                          ),
-                          // ElevatedButton(
-                          //   onPressed:() {},
-                          //   child: Text('Event Details'),
-                          // ),
+                          Center(
+                              child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: <Widget>[
+                                ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor:
+                                          Theme.of(context).primaryColorDark,
+                                      shadowColor: Colors.tealAccent,
+                                      elevation: 3,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(5.0)),
+                                      minimumSize: const Size(200,50),
+                                    ),
+                                    onPressed: () async {
+                                      // Respond to button press
+                                      await showDialog(
+                                        context: context,
+                                        builder: (myMission) =>
+                                            FutureProgressDialog(
+                                          saveMission(
+                                              context: myMission,
+                                              eventID:
+                                                  widget.eventID.toString(),
+                                              userID: id),
+                                        ),
+                                      ).then((value) async {
+                                        preferences = await SharedPreferences
+                                            .getInstance();
+                                        dynamic fav =
+                                            preferences.get('saveMission');
+                                        setState(() {
+                                          checkMission = fav;
+                                        });
+                                      });
+                                    },
+                                    child: checkMission == "already"
+                                        ? Text('Already Joined Event',  style: TextStyle(fontSize: 14),)
+                                        : Text('Join Event',  style: TextStyle(fontSize: 14),)
+                                        ),
+                              ])),
                         ],
                       );
                     })

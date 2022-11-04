@@ -3,7 +3,7 @@ part 'model_event.g.dart';
 
 @JsonSerializable()
 class Event {
-  int id, status, points, limitRegistration;
+  int id, status, points, limitRegistration, currentParticipants;
   String name, description, venue, imageUrl, category, organization;
   String startDate, endDate, startTime, endTime;
 
@@ -22,6 +22,7 @@ class Event {
     required this.points,
     required this.imageUrl,
     required this.limitRegistration,
+    required this.currentParticipants,
   });
 
   factory Event.fromJson(Map<String, dynamic> json) => _$EventFromJson(json);

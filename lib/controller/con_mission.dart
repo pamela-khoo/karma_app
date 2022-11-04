@@ -29,7 +29,9 @@ Future<List<Event>> fetchMission(List<Event> fetch, String id) async {
         organization: events['org_name'],
         points: events['points'],
         imageUrl: events['image_url'],
-        limitRegistration: events['limit_registration']));
+        limitRegistration: events['limit_registration'],
+        currentParticipants: events['current_participants']
+        ));
   }
   return fetch;
 }
@@ -58,7 +60,9 @@ Future<List<Event>> fetchUpcomingMission(List<Event> fetch, String id) async {
         organization: events['org_name'],
         points: events['points'],
         imageUrl: events['image_url'],
-        limitRegistration: events['limit_registration']));
+        limitRegistration: events['limit_registration'],
+        currentParticipants: events['current_participants']
+        ));
   }
   return fetch;
 }
@@ -87,7 +91,9 @@ Future<List<Event>> fetchCompletedMission(List<Event> fetch, String id) async {
         organization: events['org_name'],
         points: events['points'],
         imageUrl: events['image_url'],
-        limitRegistration: events['limit_registration']));
+        limitRegistration: events['limit_registration'],
+        currentParticipants: events['current_participants']
+        ));
   }
   return fetch;
 }

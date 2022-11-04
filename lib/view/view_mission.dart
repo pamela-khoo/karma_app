@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:karma_app/controller/con_mission.dart';
 import 'package:karma_app/model/model_event.dart';
+import 'package:karma_app/view/bottom_view.dart';
 import 'package:karma_app/view/view_completed_detail.dart';
 import 'package:karma_app/view/view_detail.dart';
 import 'package:karma_app/view/view_upcoming_detail.dart';
@@ -14,6 +15,10 @@ class MissionView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+       theme: ThemeData(
+        primarySwatch: Colors.teal,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+      ),
       home: DefaultTabController(
         length: 2,
         child: Scaffold(
@@ -21,13 +26,20 @@ class MissionView extends StatelessWidget {
             bottom: TabBar(
               indicator: BoxDecoration(
               borderRadius: BorderRadius.circular(50), 
-              color: Colors.greenAccent),
+              color: Colors.teal[800]),
               tabs: [
-                Tab(icon: Icon(Icons.calendar_today)),
-                Tab(icon: Icon(Icons.check_circle)),
+                Tab(icon: Icon(Icons.today_rounded)),
+                Tab(icon: Icon(Icons.task_alt)),
               ],
             ),
             title: const Text('My Volunteer Missions'),
+            leading: IconButton(
+            icon: const Icon(Icons.handshake_outlined, color: Colors.white),
+            onPressed: () {
+              Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
+    BottomView()), (Route<dynamic> route) => false);
+            },
+        ),
           ),
           body: TabBarView(
             children: [

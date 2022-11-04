@@ -5,6 +5,33 @@
 
 if (isset($_GET['events_all'])) {
 
+    //Set status of event when limit is reached 
+    $sql = mysqli_query($conn, "SELECT * FROM events ");
+
+    while ($data = mysqli_fetch_assoc($sql)) {
+        $query = "SELECT COUNT(id) as participants FROM mission WHERE event_id = '" .$data['id']. "' GROUP BY event_id";
+        $fetchCount = mysqli_query($conn, $query);
+
+        $limit = $data['limit_registration'];
+        $currentParticipants = 0;
+        $max = 0;
+
+        while ($count = mysqli_fetch_assoc($fetchCount)) {
+            $currentParticipants = $count['participants'];
+        }
+    
+        if ($limit!= 0) {
+            $max = $limit - $currentParticipants;
+            
+            if ($max <= 0) {
+                mysqli_query($conn, "UPDATE events SET status = 0 WHERE id = '" .$data['id']. "' ");
+            } else {
+                mysqli_query($conn, "UPDATE events SET status = 1 WHERE id = '" .$data['id']. "' ");
+            }
+        }
+    }
+
+    //Get all events
     $array = array();
 
     $query = "SELECT e.id AS event_id,e.name,e.start_date,e.end_date,e.start_time,e.end_time,e.description,e.status,e.venue,
@@ -15,7 +42,15 @@ if (isset($_GET['events_all'])) {
     $sql = mysqli_query($conn, $query);
 
     while ($data = mysqli_fetch_assoc($sql)) {
+        $query = "SELECT COUNT(id) as participants FROM mission WHERE event_id = '" .$data['event_id']. "' GROUP BY event_id";
+        $fetchCount = mysqli_query($conn, $query);
 
+        $currentParticipants = 0;
+
+        while ($count = mysqli_fetch_assoc($fetchCount)) {
+            $currentParticipants = $count['participants']; 
+        }
+    
         $row['id'] = $data['event_id'];
         $row['name'] = $data['name'];
         $row['start_date'] = $data['start_date'];
@@ -30,6 +65,7 @@ if (isset($_GET['events_all'])) {
         $row['points'] = $data['points'];
         $row['image_url'] = $image_path.$data['image_url'];
         $row['limit_registration'] = $data['limit_registration'];
+        $row['current_participants'] = $currentParticipants;
 
         array_push($array, $row);
     }
@@ -55,8 +91,8 @@ if (isset($_GET['events_all'])) {
         
         $row['id'] = $data['event_id'];
         $row['name'] = $data['name'];
-        $row['start_date'] = $data['start_date'];
-        $row['end_date'] = $data['end_date'];
+        $row['start_date'] = getDateString($data['start_date']);
+        $row['end_date'] = getDateString($data['end_date']);
         $row['start_time'] = $data['start_time'];
         $row['end_time'] = $data['end_time'];
         $row['description'] = $data['description'];
@@ -73,6 +109,47 @@ if (isset($_GET['events_all'])) {
 
     header( 'Content-Type: application/json; charset=utf-8' );
     echo $val= str_replace('\\/', '/', json_encode($array,JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK));
+    die();
+    
+
+//TODO: call registration limit before events_all... 
+} elseif (isset($_GET['registration_limit'])) {
+
+    $query = "SELECT id, limit_registration FROM events ";
+
+    $sql = mysqli_query($conn, $query);
+
+    while ($data = mysqli_fetch_assoc($sql)) {
+        $query = "SELECT COUNT(m.id) as participants FROM mission m WHERE m.event_id = '" .$data['id']. "' GROUP BY m.event_id";
+        $fetchCount = mysqli_query($conn, $query);
+
+        $limit = $data['limit_registration'];
+        $currentParticipants = 0;
+        $max = 0;
+
+        while ($count = mysqli_fetch_assoc($fetchCount)) {
+            $currentParticipants = $count['participants'];
+        }
+    
+        if ($limit!= 0) {
+            $max = $limit - $currentParticipants;
+            
+            if ($max <= 0) {
+                mysqli_query($conn, "UPDATE events SET status = 0 WHERE id = '" .$data['id']. "' ");
+                $message = "full";
+            } else {
+                mysqli_query($conn, "UPDATE events SET status = 1 WHERE id = '" .$data['id']. "' ");
+                $message = "available";
+            }
+        } else {
+            $message = "no limit";
+        }
+        
+        print ("$message\n");
+    }
+
+    header( 'Content-Type: application/json; charset=utf-8' );
+    echo $val= str_replace('\\/', '/', json_encode($message,JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK));
     die();
 
 } elseif (isset($_GET['mission'])) {
@@ -189,9 +266,9 @@ if (isset($_GET['events_all'])) {
         echo $val= str_replace('\\/', '/', json_encode($array,JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK));
         die();
 
-} elseif (isset($_GET['user_stats'])) {
+} elseif (isset($_GET['profile'])) {
 
-        $userID = $_GET['user_stats'];
+        $userID = $_GET['profile'];
         
         $array = array();
     
