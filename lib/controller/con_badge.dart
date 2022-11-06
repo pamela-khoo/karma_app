@@ -16,7 +16,6 @@ Future<List<Badge>> fetchBadge(List<Badge> fetch) async {
         id: badge['id'],
         badge_name: badge['badge_name'],
         badge_description: badge['badge_description'],
-        badge_status: badge['badge_status'],
         badge_img: badge['badge_img'],
         badge_key: badge['badge_key']));
   }

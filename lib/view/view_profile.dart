@@ -132,7 +132,7 @@ class _ProfileViewState extends State<ProfileView> {
                 preferences = await SharedPreferences.getInstance();
                 preferences.remove('login');
                 Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
-    Login()), (Route<dynamic> route) => false);
+Login()), (Route<dynamic> route) => false);
               },
               child: Icon(Icons.logout_rounded),
               backgroundColor: Colors.teal,
@@ -315,6 +315,7 @@ class _ProfileViewState extends State<ProfileView> {
 
                 //ROW 4
                 //Badges in GridView
+                //TODO: display from profile API
 
                 Container(
                     child: FutureBuilder(
@@ -344,9 +345,9 @@ class _ProfileViewState extends State<ProfileView> {
                                   ),
                                 ),
                                 child: Center(
-                                  child: listBadge[index].badge_status == 1
-                                      ? Text('Achieved')
-                                      : Text('No'),
+                                  // child: listBadge[index].badge_status == 1
+                                  //     ? Text('Achieved')
+                                  //     : Text('No'),
                                 ),
                               );
                             })
@@ -362,6 +363,7 @@ class _ProfileViewState extends State<ProfileView> {
             ])));
   }
 }
+
 //     return Scaffold(
 //         appBar: AppBar(
 //           title: Text("Profile"),

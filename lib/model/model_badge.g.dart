@@ -10,14 +10,12 @@ Badge _$BadgeFromJson(Map<String, dynamic> json) => Badge(
       id: json['id'] as int,
       badge_name: json['badge_name'] as String,
       badge_description: json['badge_description'] as String,
-      badge_status: json['badge_status'] as int,
       badge_img: json['badge_img'] as String,
       badge_key: json['badge_key'] as int,
     );
 
 Map<String, dynamic> _$BadgeToJson(Badge instance) => <String, dynamic>{
       'id': instance.id,
-      'badge_status': instance.badge_status,
       'badge_key': instance.badge_key,
       'badge_name': instance.badge_name,
       'badge_description': instance.badge_description,

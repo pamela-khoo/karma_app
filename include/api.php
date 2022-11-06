@@ -285,14 +285,29 @@ if (isset($_GET['events_all'])) {
             $badgeFetch = mysqli_query($conn, $query); 
             $getBadge = []; 
             foreach ($badgeFetch as $key => $value) { 
+                $getBadge[$key]['id'] = $value['id']; 
                 $getBadge[$key]['badge_name'] = $value['badge_name']; 
+                $getAllBadges[$key]['badge_description'] = $value['badge_description']; 
                 $getBadge[$key]['badge_img'] = $image_badge.$value['badge_img']; 
+                $getBadge[$key]['badge_key'] = $value['badge_key']; 
             }
             
+            $query = "SELECT * FROM badges WHERE badge_status = '1'"; 
+            $badgeFetch = mysqli_query($conn, $query); 
+            $getAllBadges = [];
+            foreach ($badgeFetch as $key => $value) { 
+                $getAllBadges[$key]['id'] = $value['id']; 
+                $getAllBadges[$key]['badge_name'] = $value['badge_name']; 
+                $getAllBadges[$key]['badge_description'] = $value['badge_description']; 
+                $getAllBadges[$key]['badge_img'] = $value['badge_img']; 
+                $getAllBadges[$key]['badge_key'] = $value['badge_key']; 
+            } 
+
             $row['id'] = $data['id'];
             $row['mission_total'] = $data['mission_total'];
             $row['points'] = $data['points'];
             $row['badge'] = $getBadge;
+            $row['all_badges'] = $getAllBadges;
     
             array_push($array, $row);
         }
@@ -300,10 +315,10 @@ if (isset($_GET['events_all'])) {
         header( 'Content-Type: application/json; charset=utf-8' );
         echo $val= str_replace('\\/', '/', json_encode($array,JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK));
         die();
-
+        
 } elseif (isset($_GET['badge'])) { 
     $array = array(); 
-    $query = "SELECT * FROM badges "; //TODO: WHERE badge_status = '1'
+    $query = "SELECT * FROM badges  WHERE badge_status = '1'"; 
     $sql = mysqli_query($conn, $query); 
     while ($data = mysqli_fetch_assoc($sql)) { 
         $row['id'] = $data['id']; 
