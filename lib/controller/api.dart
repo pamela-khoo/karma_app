@@ -7,10 +7,12 @@ class ApiConstant {
   String eventById = "event_by_id=";
   String joinMission = "utils/join_mission.php";
   String checkMission = "utils/check_mission.php";
+  String points = "utils/points.php";
   String mission = "mission=";
   String upcomingMission = "upcoming_mission=";
   String completedMission = "completed_mission=";
   String profile = "profile=";
   String badge = "badge";
   String registrationLimit = "registration_limit";
+  String mapSearch = "https://www.google.com/maps/search/?api=1&query=";
 }

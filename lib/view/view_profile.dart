@@ -5,7 +5,8 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:karma_app/controller/con_badge.dart';
-import 'package:karma_app/model/model_badge.dart';
+import 'package:karma_app/controller/con_profile.dart';
+import 'package:karma_app/model/model_profile.dart';
 import 'package:karma_app/view/bottom_view.dart';
 import 'package:karma_app/view/login.dart';
 import 'package:karma_app/view/notification_badge.dart';
@@ -35,8 +36,8 @@ class _ProfileViewState extends State<ProfileView> {
   late SharedPreferences preferences;
   String id = '', name = '', email = '';
 
-  late Future<List<Badge>>? getBadge;
-  List<Badge> listBadge = [];
+  Future<List<Profile>>? getProfile;
+  List<Profile> listProfile = [];
 
   late int _totalNotifications;
   late final FirebaseMessaging _messaging;
@@ -45,15 +46,17 @@ class _ProfileViewState extends State<ProfileView> {
   @override
   void initState() {
     super.initState();
-    getBadge = fetchBadge(listBadge);
+
     prefLoad().then((value) {
       setState(() {
         id = value[0];
         name = value[1];
         email = value[2];
+        getProfile = fetchProfile(listProfile, id);
       });
     });
     _totalNotifications = 0;
+    saveBadges(userID: id);
   }
 
   void registerNotification() async {
@@ -62,7 +65,7 @@ class _ProfileViewState extends State<ProfileView> {
     await Firebase.initializeApp();
 
     // 2. Instantiate Firebase Messaging
-  _messaging = FirebaseMessaging.instance;
+    _messaging = FirebaseMessaging.instance;
     NotificationSettings settings = await _messaging.requestPermission(
       alert: true,
       badge: true,
@@ -117,252 +120,803 @@ class _ProfileViewState extends State<ProfileView> {
     return OverlaySupport(
         child: Scaffold(
             appBar: AppBar(
-        title: const Text('Profile'),
-        automaticallyImplyLeading: false,
-        leading: IconButton(
-          icon: const Icon(Icons.handshake_outlined, color: Colors.white),
-          onPressed: () {
-             Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
-    BottomView()), (Route<dynamic> route) => false);
-          },
-        ),
-      ),
+              title: const Text('Profile'),
+              automaticallyImplyLeading: false,
+              leading: IconButton(
+                icon: const Icon(Icons.handshake_outlined, color: Colors.white),
+                onPressed: () {
+                  Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(builder: (context) => BottomView()),
+                      (Route<dynamic> route) => false);
+                },
+              ),
+            ),
             floatingActionButton: FloatingActionButton(
               onPressed: () async {
                 preferences = await SharedPreferences.getInstance();
                 preferences.remove('login');
-                Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
-Login()), (Route<dynamic> route) => false);
+                Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(builder: (context) => Login()),
+                    (Route<dynamic> route) => false);
               },
               child: Icon(Icons.logout_rounded),
               backgroundColor: Colors.teal,
             ),
-            body: Column(children: <Widget>[
-              Expanded(
-                  child: ListView(children: <Widget>[
-                NotificationBadge(totalNotifications: _totalNotifications),
-                ElevatedButton(
-                  onPressed: () {
-                    registerNotification();
-                  },
-                  child: Text('Test'),
-                ),
-                //ROW 1
-                Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Column(
-                                children: [
-                                  Container(
-                                    height: 100.0,
-                                    width: 100.0,
-                                    decoration: const BoxDecoration(
-                                        image: DecorationImage(
-                                            image:
-                                                AssetImage('assets/arrow.jpg'),
-                                            fit: BoxFit.scaleDown),
-                                        shape: BoxShape.circle),
-                                  ),
-                                  const Text(
-                                    'Missions Completed',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                  Text(
-                                    '5', //TODO: get value from db count missions where user_id = {id} and status = 1
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontFamily: 'Aleo',
-                                      fontStyle: FontStyle.normal,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 25,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                        Flexible(
-                          fit: FlexFit.tight,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Column(
-                                children: [
-                                  Container(
-                                    height: 100.0,
-                                    width: 100.0,
-                                    decoration: const BoxDecoration(
-                                        image: DecorationImage(
-                                            image:
-                                                AssetImage('assets/points.jpg'),
-                                            fit: BoxFit.scaleDown),
-                                        shape: BoxShape.circle),
-                                  ),
-                                  const Text(
-                                    'Karma Points',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                  Text(
-                                    '50', //TODO: get value from db get points from user where user_id = {id}
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontFamily: 'Aleo',
-                                      fontStyle: FontStyle.normal,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 25,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    )),
-
-                //ROW 2
-                Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const Text(
-                                  'Karma Journey',
-                                  style: TextStyle(
-                                    fontFamily: 'Aleo',
-                                    fontStyle: FontStyle.normal,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 25,
-                                  ),
-                                ),
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(5, 15, 5, 15),
-                                  child: LinearPercentIndicator(
-                                    width:
-                                        MediaQuery.of(context).size.width - 50,
-                                    animation: true,
-                                    lineHeight: 30.0,
-                                    animationDuration: 2000,
-                                    percent:
-                                        0.6, //TODO: Change to value from DB
-                                    barRadius: const Radius.circular(16),
-                                    linearGradient: LinearGradient(
-                                      colors: [
-                                        Color.fromARGB(255, 41, 123, 44),
-                                        Color.fromARGB(255, 116, 204, 157)
-                                      ],
-                                    ),
-                                    backgroundColor: Colors.grey[300],
-                                  ),
-                                ),
-                                const Text(
-                                  'Every 1,000 Karma points collected earns you RM 10 at our local business partners.',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              ]),
-                        )
-                      ]),
-                ),
-
-                //ROW 3
-                Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                            child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                              const Text(
-                                'Badges Earned',
-                                style: TextStyle(
-                                  fontFamily: 'Aleo',
-                                  fontStyle: FontStyle.normal,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 25,
-                                ),
-                              ),
-                            ]))
-                      ]),
-                ),
-
-                //ROW 4
-                //Badges in GridView
-                //TODO: display from profile API
-
-                Container(
+            body: SafeArea(
+                child: Container(
                     child: FutureBuilder(
-                  future: getBadge,
-                  builder: (BuildContext context,
-                      AsyncSnapshot<List<Badge>> snapshot) {
-                    if (snapshot.connectionState == ConnectionState.done) {
-                      return Stack(children: [
-                        GridView.builder(
-                            gridDelegate:
-                                const SliverGridDelegateWithMaxCrossAxisExtent(
-                                    maxCrossAxisExtent: 200,
-                                    childAspectRatio: 3 / 2,
-                                    crossAxisSpacing: 20,
-                                    mainAxisSpacing: 20),
-                            scrollDirection: Axis.vertical,
-                            shrinkWrap: true,
-                            itemCount: snapshot.data!.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return Container(
-                                width: double.infinity,
-                                height: double.infinity,
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    image: NetworkImage(
-                                        listBadge[index].badge_img),
-                                  ),
-                                ),
-                                child: Center(
-                                  // child: listBadge[index].badge_status == 1
-                                  //     ? Text('Achieved')
-                                  //     : Text('No'),
-                                ),
-                              );
-                            })
-                      ]);
-                    } else {
-                      return Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
-                  },
-                )),
-              ])),
-            ])));
+                        future: getProfile,
+                        builder: (BuildContext context,
+                            AsyncSnapshot<List<Profile>> snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.done) {
+                            return ListView.builder(
+                                scrollDirection: Axis.vertical,
+                                itemCount: snapshot.data!.length,
+                                itemBuilder: (context, index) {
+                                  return Column(children: [
+                                    // Notification test
+                                    NotificationBadge(
+                                        totalNotifications:
+                                            _totalNotifications),
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        registerNotification();
+                                      },
+                                      child: Text('Test'),
+                                    ),
+
+                                    //ROW 1
+                                    Padding(
+                                        padding: const EdgeInsets.all(20.0),
+                                        child: Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            Expanded(
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.stretch,
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  Column(
+                                                    children: [
+                                                      Container(
+                                                        height: 100.0,
+                                                        width: 100.0,
+                                                        decoration: const BoxDecoration(
+                                                            image: DecorationImage(
+                                                                image: AssetImage(
+                                                                    'assets/arrow.jpg'),
+                                                                fit: BoxFit
+                                                                    .scaleDown),
+                                                            shape: BoxShape
+                                                                .circle),
+                                                      ),
+                                                      const Text(
+                                                        'Missions Completed',
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                        style: TextStyle(
+                                                          fontSize: 14,
+                                                        ),
+                                                      ),
+                                                      Text(
+                                                        '${listProfile[index].missionTotal}',
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                        style: const TextStyle(
+                                                          fontFamily: 'Aleo',
+                                                          fontStyle:
+                                                              FontStyle.normal,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 25,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Flexible(
+                                              fit: FlexFit.tight,
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.stretch,
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  Column(
+                                                    children: [
+                                                      Container(
+                                                        height: 100.0,
+                                                        width: 100.0,
+                                                        decoration: const BoxDecoration(
+                                                            image: DecorationImage(
+                                                                image: AssetImage(
+                                                                    'assets/points.jpg'),
+                                                                fit: BoxFit
+                                                                    .scaleDown),
+                                                            shape: BoxShape
+                                                                .circle),
+                                                      ),
+                                                      const Text(
+                                                        'Karma Points',
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                        style: TextStyle(
+                                                          fontSize: 14,
+                                                        ),
+                                                      ),
+                                                      Text(
+                                                        '${listProfile[index].points}',
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                        style: const TextStyle(
+                                                          fontFamily: 'Aleo',
+                                                          fontStyle:
+                                                              FontStyle.normal,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 25,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        )),
+
+                                    //ROW 2
+                                    Padding(
+                                      padding: const EdgeInsets.all(20.0),
+                                      child: Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Expanded(
+                                              child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: [
+                                                    const Text(
+                                                      'Karma Journey',
+                                                      style: TextStyle(
+                                                        fontFamily: 'Aleo',
+                                                        fontStyle:
+                                                            FontStyle.normal,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontSize: 25,
+                                                      ),
+                                                    ),
+                                                    Padding(
+                                                      padding: const EdgeInsets
+                                                              .fromLTRB(
+                                                          5, 15, 5, 15),
+                                                      child:
+                                                          LinearPercentIndicator(
+                                                        width: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width -
+                                                            50,
+                                                        animation: true,
+                                                        lineHeight: 30.0,
+                                                        animationDuration: 2000,
+                                                        percent:
+                                                            (listProfile[index]
+                                                                    .points /
+                                                                1000),
+                                                        barRadius: const Radius
+                                                            .circular(16),
+                                                        linearGradient:
+                                                            const LinearGradient(
+                                                          colors: [
+                                                            Color.fromARGB(255,
+                                                                41, 123, 44),
+                                                            Color.fromARGB(255,
+                                                                116, 204, 157)
+                                                          ],
+                                                        ),
+                                                        backgroundColor:
+                                                            Colors.grey[300],
+                                                      ),
+                                                    ),
+                                                    const Text(
+                                                      'Every 1,000 Karma points collected earns you RM 10 at our local business partners.',
+                                                      style: TextStyle(
+                                                        fontSize: 14,
+                                                      ),
+                                                    ),
+                                                  ]),
+                                            )
+                                          ]),
+                                    ),
+
+                                    //ROW 3
+                                    Padding(
+                                      padding: const EdgeInsets.all(20.0),
+                                      child: Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Expanded(
+                                                child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    mainAxisSize:
+                                                        MainAxisSize.min,
+                                                    children: [
+                                                   Text(
+                                                    'Badges Earned',
+                                                    style: TextStyle(
+                                                      fontFamily: 'Aleo',
+                                                      fontStyle:
+                                                          FontStyle.normal,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 25,
+                                                    ),
+                                                  ),
+                                                ]))
+                                          ]),
+                                    ),
+
+                                    //ROW 4
+
+                                    listProfile[index].badgeAll.isNotEmpty
+                                        ? GridView.builder(
+                                            gridDelegate:
+                                                const SliverGridDelegateWithMaxCrossAxisExtent(
+                                                    maxCrossAxisExtent: 200,
+                                                    childAspectRatio: 3 / 2,
+                                                    crossAxisSpacing: 20,
+                                                    mainAxisSpacing: 20),
+                                            scrollDirection: Axis.vertical,
+                                            shrinkWrap: true,
+                                            itemCount: listProfile[index]
+                                                .badgeAll
+                                                .length,
+                                            itemBuilder: (BuildContext context,
+                                                int indexBadge) {
+                                              return GestureDetector(
+                                                onTap: () async {
+                                                  await showDialog(
+                                                      context: context,
+                                                      builder: (context) =>
+                                                          AlertDialog(
+                                                            content: Container(
+                                                              child: Column( 
+                                                                mainAxisSize: MainAxisSize.min,
+                                                                children: <Widget>[
+                                                                Image.network(
+                                                            listProfile[index]
+                                                                .badgeAll[
+                                                                    indexBadge]
+                                                                .badge_img),
+                                                                Text(listProfile[index].badgeAll[indexBadge].badge_description),
+                                                              ]
+                                                              ),
+                                                            ),
+                                                          ));
+                                                },
+                                                child: Container(
+                                                  width: double.infinity,
+                                                  height: double.infinity,
+                                                  decoration: BoxDecoration(
+                                                    image: DecorationImage(
+                                                        image: NetworkImage(
+                                                            listProfile[index]
+                                                                .badgeAll[
+                                                                    indexBadge]
+                                                                .badge_img)),
+                                                  ),
+                                                  child: Center(
+                                                    // child: listProfile[index]
+                                                    //             .badgeAll[
+                                                    //                 indexBadge]
+                                                    //             .id ==
+                                                    //         listProfile[index]
+                                                    //             .badge[index]
+                                                    //             .id
+                                                    //     ? Text('Achieved')
+                                                    //     : Text('No'),
+                                                  ),
+                                                ),
+                                              );
+                                            })
+                                        : Container(),
+                                  ]);
+                                });
+                          } else {
+                            return Center(child: CircularProgressIndicator());
+                          }
+                        })))));
   }
 }
+
+
+//                       return Column(children: [
+//                         Text('${index+1}'),
+//                         //ROW 1
+//                         Padding(
+//                             padding: const EdgeInsets.all(20.0),
+//                             child: Row(
+//                               crossAxisAlignment: CrossAxisAlignment.center,
+//                               children: [
+//                                 Expanded(
+//                                   child: Column(
+//                                     mainAxisAlignment: MainAxisAlignment.start,
+//                                     crossAxisAlignment:
+//                                         CrossAxisAlignment.stretch,
+//                                     mainAxisSize: MainAxisSize.min,
+//                                     children: [
+//                                       Column(
+//                                         children: [
+//                                           Container(
+//                                             height: 100.0,
+//                                             width: 100.0,
+//                                             decoration: const BoxDecoration(
+//                                                 image: DecorationImage(
+//                                                     image: AssetImage(
+//                                                         'assets/arrow.jpg'),
+//                                                     fit: BoxFit.scaleDown),
+//                                                 shape: BoxShape.circle),
+//                                           ),
+//                                           const Text(
+//                                             'Missions Completed',
+//                                             textAlign: TextAlign.center,
+//                                             style: TextStyle(
+//                                               fontSize: 14,
+//                                             ),
+//                                           ),
+//                                           Text(
+//                                             '5', //TODO: get value from db count missions where user_id = {id} and status = 1
+//                                             textAlign: TextAlign.center,
+//                                             style: TextStyle(
+//                                               fontFamily: 'Aleo',
+//                                               fontStyle: FontStyle.normal,
+//                                               fontWeight: FontWeight.bold,
+//                                               fontSize: 25,
+//                                             ),
+//                                           ),
+//                                         ],
+//                                       ),
+//                                     ],
+//                                   ),
+//                                 ),
+//                                 Flexible(
+//                                   fit: FlexFit.tight,
+//                                   child: Column(
+//                                     mainAxisAlignment: MainAxisAlignment.center,
+//                                     crossAxisAlignment:
+//                                         CrossAxisAlignment.stretch,
+//                                     mainAxisSize: MainAxisSize.min,
+//                                     children: [
+//                                       Column(
+//                                         children: [
+//                                           Container(
+//                                             height: 100.0,
+//                                             width: 100.0,
+//                                             decoration: const BoxDecoration(
+//                                                 image: DecorationImage(
+//                                                     image: AssetImage(
+//                                                         'assets/points.jpg'),
+//                                                     fit: BoxFit.scaleDown),
+//                                                 shape: BoxShape.circle),
+//                                           ),
+//                                           const Text(
+//                                             'Karma Points',
+//                                             textAlign: TextAlign.center,
+//                                             style: TextStyle(
+//                                               fontSize: 14,
+//                                             ),
+//                                           ),
+//                                           Text(
+//                                             '50', //TODO: get value from db get points from user where user_id = {id}
+//                                             textAlign: TextAlign.center,
+//                                             style: TextStyle(
+//                                               fontFamily: 'Aleo',
+//                                               fontStyle: FontStyle.normal,
+//                                               fontWeight: FontWeight.bold,
+//                                               fontSize: 25,
+//                                             ),
+//                                           ),
+//                                         ],
+//                                       ),
+//                                     ],
+//                                   ),
+//                                 ),
+//                               ],
+//                             )),
+
+//                         //ROW 2
+//                         Padding(
+//                           padding: const EdgeInsets.all(20.0),
+//                           child: Row(
+//                               crossAxisAlignment: CrossAxisAlignment.start,
+//                               children: [
+//                                 Expanded(
+//                                   child: Column(
+//                                       crossAxisAlignment:
+//                                           CrossAxisAlignment.start,
+//                                       mainAxisSize: MainAxisSize.min,
+//                                       children: [
+//                                         const Text(
+//                                           'Karma Journey',
+//                                           style: TextStyle(
+//                                             fontFamily: 'Aleo',
+//                                             fontStyle: FontStyle.normal,
+//                                             fontWeight: FontWeight.bold,
+//                                             fontSize: 25,
+//                                           ),
+//                                         ),
+//                                         Padding(
+//                                           padding: const EdgeInsets.fromLTRB(
+//                                               5, 15, 5, 15),
+//                                           child: LinearPercentIndicator(
+//                                             width: MediaQuery.of(context)
+//                                                     .size
+//                                                     .width -
+//                                                 50,
+//                                             animation: true,
+//                                             lineHeight: 30.0,
+//                                             animationDuration: 2000,
+//                                             percent:
+//                                                 0.6, //TODO: Change to value from DB
+//                                             barRadius:
+//                                                 const Radius.circular(16),
+//                                             linearGradient: LinearGradient(
+//                                               colors: [
+//                                                 Color.fromARGB(
+//                                                     255, 41, 123, 44),
+//                                                 Color.fromARGB(
+//                                                     255, 116, 204, 157)
+//                                               ],
+//                                             ),
+//                                             backgroundColor: Colors.grey[300],
+//                                           ),
+//                                         ),
+//                                         const Text(
+//                                           'Every 1,000 Karma points collected earns you RM 10 at our local business partners.',
+//                                           style: TextStyle(
+//                                             fontSize: 14,
+//                                           ),
+//                                         ),
+//                                       ]),
+//                                 )
+//                               ]),
+//                         ),
+
+//                         //ROW 3
+//                         Padding(
+//                           padding: const EdgeInsets.all(20.0),
+//                           child: Row(
+//                               crossAxisAlignment: CrossAxisAlignment.start,
+//                               children: [
+//                                 Expanded(
+//                                     child: Column(
+//                                         crossAxisAlignment:
+//                                             CrossAxisAlignment.start,
+//                                         mainAxisSize: MainAxisSize.min,
+//                                         children: [
+//                                       const Text(
+//                                         'Badges Earned',
+//                                         style: TextStyle(
+//                                           fontFamily: 'Aleo',
+//                                           fontStyle: FontStyle.normal,
+//                                           fontWeight: FontWeight.bold,
+//                                           fontSize: 25,
+//                                         ),
+//                                       ),
+//                                     ]))
+//                               ]),
+//                         ),
+
+//                         //ROW 4
+//                         Column(
+//                           children: [
+//                             listProfile[index].badge.length != 0 ?
+//                         GridView.builder(
+//                             gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+//                                     maxCrossAxisExtent: 200,
+//                                     childAspectRatio: 3 / 2,
+//                                     crossAxisSpacing: 20,
+//                                     mainAxisSpacing: 20),
+//                                 scrollDirection: Axis.vertical,
+//                                 shrinkWrap: true,
+//                                 itemCount: listProfile[index].badgeAll.length,
+//                                 itemBuilder: (BuildContext context, int index) {
+//                               return Container(
+//                                 width: double.infinity,
+//                                 height: double.infinity,
+//                                 decoration: BoxDecoration(
+//                                   image: DecorationImage(
+//                                     image: NetworkImage(
+//                                         listProfile[index].badge.toString()),
+//                                   ),
+//                                 ),
+//                                 child: Center(
+//                                     // child: listBadge[index].badge_status == 1
+//                                     //     ? Text('Achieved')
+//                                     //     : Text('No'),
+//                                     ),
+//                               );
+//                             })
+//                       ]);
+//                     } else {
+//                       return Center(
+//                         child: CircularProgressIndicator(),
+//                       );
+//                     }
+//                   },
+//                 )),
+//               ])),
+//             ])));
+//   }
+// }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return OverlaySupport(
+//         child: Scaffold(
+//             appBar: AppBar(
+//         title: const Text('Profile'),
+//         automaticallyImplyLeading: false,
+//         leading: IconButton(
+//           icon: const Icon(Icons.handshake_outlined, color: Colors.white),
+//           onPressed: () {
+//              Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
+//     BottomView()), (Route<dynamic> route) => false);
+//           },
+//         ),
+//       ),
+//             floatingActionButton: FloatingActionButton(
+//               onPressed: () async {
+//                 preferences = await SharedPreferences.getInstance();
+//                 preferences.remove('login');
+//                 Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
+// Login()), (Route<dynamic> route) => false);
+//               },
+//               child: Icon(Icons.logout_rounded),
+//               backgroundColor: Colors.teal,
+//             ),
+//             body: Column(children: <Widget>[
+//               Expanded(
+//                   child: ListView(children: <Widget>[
+//                 NotificationBadge(totalNotifications: _totalNotifications),
+//                 ElevatedButton(
+//                   onPressed: () {
+//                     registerNotification();
+//                   },
+//                   child: Text('Test'),
+//                 ),
+//                 //ROW 1
+//                 Padding(
+//                     padding: const EdgeInsets.all(20.0),
+//                     child: Row(
+//                       crossAxisAlignment: CrossAxisAlignment.center,
+//                       children: [
+//                         Expanded(
+//                           child: Column(
+//                             mainAxisAlignment: MainAxisAlignment.start,
+//                             crossAxisAlignment: CrossAxisAlignment.stretch,
+//                             mainAxisSize: MainAxisSize.min,
+//                             children: [
+//                               Column(
+//                                 children: [
+//                                   Container(
+//                                     height: 100.0,
+//                                     width: 100.0,
+//                                     decoration: const BoxDecoration(
+//                                         image: DecorationImage(
+//                                             image:
+//                                                 AssetImage('assets/arrow.jpg'),
+//                                             fit: BoxFit.scaleDown),
+//                                         shape: BoxShape.circle),
+//                                   ),
+//                                   const Text(
+//                                     'Missions Completed',
+//                                     textAlign: TextAlign.center,
+//                                     style: TextStyle(
+//                                       fontSize: 14,
+//                                     ),
+//                                   ),
+//                                   Text(
+//                                     '5', //TODO: get value from db count missions where user_id = {id} and status = 1
+//                                     textAlign: TextAlign.center,
+//                                     style: TextStyle(
+//                                       fontFamily: 'Aleo',
+//                                       fontStyle: FontStyle.normal,
+//                                       fontWeight: FontWeight.bold,
+//                                       fontSize: 25,
+//                                     ),
+//                                   ),
+//                                 ],
+//                               ),
+//                             ],
+//                           ),
+//                         ),
+//                         Flexible(
+//                           fit: FlexFit.tight,
+//                           child: Column(
+//                             mainAxisAlignment: MainAxisAlignment.center,
+//                             crossAxisAlignment: CrossAxisAlignment.stretch,
+//                             mainAxisSize: MainAxisSize.min,
+//                             children: [
+//                               Column(
+//                                 children: [
+//                                   Container(
+//                                     height: 100.0,
+//                                     width: 100.0,
+//                                     decoration: const BoxDecoration(
+//                                         image: DecorationImage(
+//                                             image:
+//                                                 AssetImage('assets/points.jpg'),
+//                                             fit: BoxFit.scaleDown),
+//                                         shape: BoxShape.circle),
+//                                   ),
+//                                   const Text(
+//                                     'Karma Points',
+//                                     textAlign: TextAlign.center,
+//                                     style: TextStyle(
+//                                       fontSize: 14,
+//                                     ),
+//                                   ),
+//                                   Text(
+//                                     '50', //TODO: get value from db get points from user where user_id = {id}
+//                                     textAlign: TextAlign.center,
+//                                     style: TextStyle(
+//                                       fontFamily: 'Aleo',
+//                                       fontStyle: FontStyle.normal,
+//                                       fontWeight: FontWeight.bold,
+//                                       fontSize: 25,
+//                                     ),
+//                                   ),
+//                                 ],
+//                               ),
+//                             ],
+//                           ),
+//                         ),
+//                       ],
+//                     )),
+
+//                 //ROW 2
+//                 Padding(
+//                   padding: const EdgeInsets.all(20.0),
+//                   child: Row(
+//                       crossAxisAlignment: CrossAxisAlignment.start,
+//                       children: [
+//                         Expanded(
+//                           child: Column(
+//                               crossAxisAlignment: CrossAxisAlignment.start,
+//                               mainAxisSize: MainAxisSize.min,
+//                               children: [
+//                                 const Text(
+//                                   'Karma Journey',
+//                                   style: TextStyle(
+//                                     fontFamily: 'Aleo',
+//                                     fontStyle: FontStyle.normal,
+//                                     fontWeight: FontWeight.bold,
+//                                     fontSize: 25,
+//                                   ),
+//                                 ),
+//                                 Padding(
+//                                   padding:
+//                                       const EdgeInsets.fromLTRB(5, 15, 5, 15),
+//                                   child: LinearPercentIndicator(
+//                                     width:
+//                                         MediaQuery.of(context).size.width - 50,
+//                                     animation: true,
+//                                     lineHeight: 30.0,
+//                                     animationDuration: 2000,
+//                                     percent:
+//                                         0.6, //TODO: Change to value from DB
+//                                     barRadius: const Radius.circular(16),
+//                                     linearGradient: LinearGradient(
+//                                       colors: [
+//                                         Color.fromARGB(255, 41, 123, 44),
+//                                         Color.fromARGB(255, 116, 204, 157)
+//                                       ],
+//                                     ),
+//                                     backgroundColor: Colors.grey[300],
+//                                   ),
+//                                 ),
+//                                 const Text(
+//                                   'Every 1,000 Karma points collected earns you RM 10 at our local business partners.',
+//                                   style: TextStyle(
+//                                     fontSize: 14,
+//                                   ),
+//                                 ),
+//                               ]),
+//                         )
+//                       ]),
+//                 ),
+
+//                 //ROW 3
+//                 Padding(
+//                   padding: const EdgeInsets.all(20.0),
+//                   child: Row(
+//                       crossAxisAlignment: CrossAxisAlignment.start,
+//                       children: [
+//                         Expanded(
+//                             child: Column(
+//                                 crossAxisAlignment: CrossAxisAlignment.start,
+//                                 mainAxisSize: MainAxisSize.min,
+//                                 children: [
+//                               const Text(
+//                                 'Badges Earned',
+//                                 style: TextStyle(
+//                                   fontFamily: 'Aleo',
+//                                   fontStyle: FontStyle.normal,
+//                                   fontWeight: FontWeight.bold,
+//                                   fontSize: 25,
+//                                 ),
+//                               ),
+//                             ]))
+//                       ]),
+//                 ),
+
+//                 //ROW 4
+//                 //Badges in GridView
+//                 //TODO: display from profile API
+
+//                 Container(
+//                     child: FutureBuilder(
+//                   future: getBadge,
+//                   builder: (BuildContext context,
+//                       AsyncSnapshot<List<Badge>> snapshot) {
+//                     if (snapshot.connectionState == ConnectionState.done) {
+//                       return Stack(children: [
+//                         GridView.builder(
+//                             gridDelegate:
+//                                 const SliverGridDelegateWithMaxCrossAxisExtent(
+//                                     maxCrossAxisExtent: 200,
+//                                     childAspectRatio: 3 / 2,
+//                                     crossAxisSpacing: 20,
+//                                     mainAxisSpacing: 20),
+//                             scrollDirection: Axis.vertical,
+//                             shrinkWrap: true,
+//                             itemCount: snapshot.data!.length,
+//                             itemBuilder: (BuildContext context, int index) {
+//                               return Container(
+//                                 width: double.infinity,
+//                                 height: double.infinity,
+//                                 decoration: BoxDecoration(
+//                                   image: DecorationImage(
+//                                     image: NetworkImage(
+//                                         listBadge[index].badge_img),
+//                                   ),
+//                                 ),
+//                                 child: Center(
+//                                   // child: listBadge[index].badge_status == 1
+//                                   //     ? Text('Achieved')
+//                                   //     : Text('No'),
+//                                 ),
+//                               );
+//                             })
+//                       ]);
+//                     } else {
+//                       return Center(
+//                         child: CircularProgressIndicator(),
+//                       );
+//                     }
+//                   },
+//                 )),
+//               ])),
+//             ])));
+//   }
+// }
 
 //     return Scaffold(
 //         appBar: AppBar(

@@ -4,7 +4,7 @@ part 'model_event.g.dart';
 @JsonSerializable()
 class Event {
   int id, status, points, limitRegistration, currentParticipants;
-  String name, description, venue, imageUrl, category, organization;
+  String name, description, venue, imageUrl, category, organization, orgImageUrl, orgUrl;
   String startDate, endDate, startTime, endTime;
 
   Event({
@@ -19,6 +19,8 @@ class Event {
     required this.venue,
     required this.category,
     required this.organization,
+    required this.orgImageUrl,
+    required this.orgUrl,
     required this.points,
     required this.imageUrl,
     required this.limitRegistration,

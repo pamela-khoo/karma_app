@@ -97,9 +97,9 @@ class _HomeViewState extends State<HomeView> {
                                         fontWeight: FontWeight.bold),
                                   ),
                                   Text(
-                                    months[DateTime.parse(
+                                    months[(DateTime.parse(
                                             listSlider[index].startDate)
-                                        .month],
+                                        .month)-1],
                                     style: const TextStyle(
                                         fontSize: 20,
                                         fontWeight: FontWeight.bold),
@@ -109,7 +109,7 @@ class _HomeViewState extends State<HomeView> {
                               title: Text(
                                 listSlider[index].name,
                                 style:
-                                    new TextStyle(fontWeight: FontWeight.bold),
+                                    const TextStyle(fontWeight: FontWeight.bold),
                               ),
                               subtitle: Text(
                                 listSlider[index].organization,
@@ -119,26 +119,25 @@ class _HomeViewState extends State<HomeView> {
                             ),
                             Row(
                               children: <Widget>[
-                                SizedBox(width: 70),
-                                Icon(
+                                const SizedBox(width: 70),
+                                const Icon(
                                   Icons.location_city,
                                   color: Color.fromARGB(255, 237, 137, 170),
                                 ),
-                                SizedBox(width: 10),
+                                const SizedBox(width: 10),
                                 Text(
                                   listSlider[index].venue,
-                                  style: TextStyle(),
                                 )
                               ],
                             ),
                             Row(
                               children: <Widget>[
-                                SizedBox(width: 70),
+                                const SizedBox(width: 70),
                                 Icon(
                                   Icons.local_attraction_rounded,
                                   color: Colors.amber[500],
                                 ),
-                                SizedBox(width: 10),
+                                const SizedBox(width: 10),
                                 listSlider[index].limitRegistration == 0
                                     ? Text('Open registration!')
                                     : Text(
@@ -146,7 +145,7 @@ class _HomeViewState extends State<HomeView> {
                                       )
                               ],
                             ),
-                            SizedBox(height: 10),
+                            const SizedBox(height: 10),
                           ],
                         ),
                       ),

@@ -1,15 +1,18 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:future_progress_dialog/future_progress_dialog.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter/services.dart';
 import 'package:karma_app/controller/api.dart';
 import 'package:karma_app/controller/con_detail.dart';
 import 'package:karma_app/controller/con_save_mission.dart';
 import 'package:karma_app/model/model_event.dart';
 import 'package:karma_app/widget/shared_pref.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class DetailView extends StatefulWidget {
   int eventID;
@@ -53,13 +56,12 @@ class _DetailViewState extends State<DetailView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: new Text('Detail Page'),
+        title: const Text('Detail Page'),
         leading: GestureDetector(
             onTap: () => Navigator.of(context).pop(false),
             child: Icon(Icons.arrow_back)),
       ),
-      body: Container(
-          child: FutureBuilder(
+      body: FutureBuilder(
         future: getDetail,
         builder: (BuildContext context, AsyncSnapshot<List<Event>> snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
@@ -79,9 +81,50 @@ class _DetailViewState extends State<DetailView> {
                                   fontWeight: FontWeight.bold, fontSize: 24.0),
                             ),
                           ),
+                          InkWell(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Container(
+                                      height: 50,
+                                      width: 100,
+                                      decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                              image: NetworkImage(
+                                                  listDetail[index]
+                                                      .orgImageUrl),
+                                              fit: BoxFit.fill),
+                                          shape: BoxShape.circle)),
+                                  Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Text(
+                                          listDetail[index].organization,
+                                          style: const TextStyle(
+                                            fontSize: 16.0,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        const Text(
+                                          'Tap to learn more',
+                                          style: TextStyle(
+                                            fontSize: 16.0,
+                                            fontStyle: FontStyle.italic,
+                                            color: Color.fromRGBO(
+                                                155, 155, 155, 1.0),
+                                          ),
+                                        ),
+                                      ]),
+                                ],
+                              ),
+                              onTap: () => launch(listDetail[index].orgUrl)
+                            ),
+
                           Padding(
-                            child: Image.network(listDetail[index].imageUrl),
                             padding: EdgeInsets.all(16.0),
+                            child: Image.network(listDetail[index].imageUrl),
                           ),
                           Padding(
                             padding: EdgeInsets.only(top: 20.0, left: 20.0),
@@ -91,15 +134,18 @@ class _DetailViewState extends State<DetailView> {
                                   Icons.calendar_month,
                                   color: Colors.blue[300],
                                 ),
-                                SizedBox(width: 10),
-                                Text(
-                                  '${listDetail[index].startDate} to ${listDetail[index].endDate}',
-                                  style: TextStyle(),
-                                )
+                                const SizedBox(width: 10),
+
+                                listDetail[index].startDate == listDetail[index].endDate
+                                          ? Text(
+                                              listDetail[index].startDate,
+                                            )
+                                          : Text(
+                                              '${listDetail[index].startDate} to ${listDetail[index].endDate}',
+                                            )
                               ],
                             ),
                           ),
-                          //TODO: Time slots
                           Padding(
                             padding: EdgeInsets.only(top: 20.0, left: 20.0),
                             child: Row(
@@ -119,18 +165,32 @@ class _DetailViewState extends State<DetailView> {
                           Padding(
                             padding: EdgeInsets.only(top: 20.0, left: 20.0),
                             child: Row(
-                              children: <Widget>[
-                                Icon(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                   Icon(
                                   Icons.location_on,
                                   color: Colors.deepOrange[300],
                                 ),
                                 SizedBox(width: 10),
-                                Text(
-                                  listDetail[index].venue,
-                                  style: TextStyle(),
-                                )
-                              ],
-                            ),
+                                  Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Text(
+                                          listDetail[index].venue,
+                                        ),
+                                        ElevatedButton(
+                                           style: TextButton.styleFrom(
+                                            primary: Colors.blue,
+      backgroundColor: Colors.white, // Background Color
+),
+                                          child: const Text('View on Google Maps'),
+                                         onPressed: () => launch(ApiConstant().mapSearch+listDetail[index].organization)
+                                        ),
+                                      ]),
+                                ],
+                              ),
                           ),
                           Padding(
                             padding: EdgeInsets.only(top: 20.0, left: 20.0),
@@ -143,7 +203,6 @@ class _DetailViewState extends State<DetailView> {
                                 SizedBox(width: 10),
                                 Text(
                                   'Earn ${listDetail[index].points.toString()} Karma points',
-                                  style: TextStyle(),
                                 )
                               ],
                             ),
@@ -164,60 +223,68 @@ class _DetailViewState extends State<DetailView> {
                             ),
                           ),
                           Center(
-                              child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: <Widget>[
-                                ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor:
-                                          Theme.of(context).primaryColorDark,
-                                      shadowColor: Colors.tealAccent,
-                                      elevation: 3,
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(5.0)),
-                                      minimumSize: const Size(200,50),
-                                    ),
-                                    onPressed: () async {
-                                      // Respond to button press
-                                      await showDialog(
-                                        context: context,
-                                        builder: (myMission) =>
-                                            FutureProgressDialog(
-                                          saveMission(
-                                              context: myMission,
-                                              eventID:
-                                                  widget.eventID.toString(),
-                                              userID: id),
-                                        ),
-                                      ).then((value) async {
-                                        preferences = await SharedPreferences
-                                            .getInstance();
-                                        dynamic fav =
-                                            preferences.get('saveMission');
-                                        setState(() {
-                                          checkMission = fav;
+                              child: Padding(
+                            padding: const EdgeInsets.only(bottom: 20.0),
+                            child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: <Widget>[
+                                  ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor:
+                                            Theme.of(context).primaryColorDark,
+                                        shadowColor: Colors.tealAccent,
+                                        elevation: 3,
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(5.0)),
+                                        minimumSize: const Size(200, 50),
+                                      ),
+                                      onPressed: () async {
+                                        // Respond to button press
+                                        await showDialog(
+                                          context: context,
+                                          builder: (myMission) =>
+                                              FutureProgressDialog(
+                                            saveMission(
+                                                context: myMission,
+                                                eventID:
+                                                    widget.eventID.toString(),
+                                                userID: id),
+                                          ),
+                                        ).then((value) async {
+                                          preferences = await SharedPreferences
+                                              .getInstance();
+                                          dynamic fav =
+                                              preferences.get('saveMission');
+                                          setState(() {
+                                            checkMission = fav;
+                                          });
                                         });
-                                      });
-                                    },
-                                    child: checkMission == "already"
-                                        ? Text('Already Joined Event',  style: TextStyle(fontSize: 14),)
-                                        : Text('Join Event',  style: TextStyle(fontSize: 14),)
-                                        ),
-                              ])),
+                                      },
+                                      child: checkMission == "already"
+                                          ? Text(
+                                              'Already Joined Event',
+                                              style: TextStyle(fontSize: 14),
+                                            )
+                                          : Text(
+                                              'Join Event',
+                                              style: TextStyle(fontSize: 14),
+                                            )),
+                                ]),
+                          )),
                         ],
                       );
                     })
               ],
             );
           } else {
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(),
             );
           }
         },
-      )),
+      ),
     );
   }
 }

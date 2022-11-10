@@ -14,7 +14,7 @@ class _BottomViewState extends State<BottomView> {
   int currentIndex = 0;
 
   List<Widget> body = [HomeView(), MissionView(), ProfileView()];
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

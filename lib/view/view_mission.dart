@@ -15,7 +15,7 @@ class MissionView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-       theme: ThemeData(
+      theme: ThemeData(
         primarySwatch: Colors.teal,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
@@ -25,8 +25,8 @@ class MissionView extends StatelessWidget {
           appBar: AppBar(
             bottom: TabBar(
               indicator: BoxDecoration(
-              borderRadius: BorderRadius.circular(50), 
-              color: Colors.teal[800]),
+                  borderRadius: BorderRadius.circular(50),
+                  color: Colors.teal[800]),
               tabs: [
                 Tab(icon: Icon(Icons.today_rounded)),
                 Tab(icon: Icon(Icons.task_alt)),
@@ -34,12 +34,13 @@ class MissionView extends StatelessWidget {
             ),
             title: const Text('My Volunteer Missions'),
             leading: IconButton(
-            icon: const Icon(Icons.handshake_outlined, color: Colors.white),
-            onPressed: () {
-              Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
-    BottomView()), (Route<dynamic> route) => false);
-            },
-        ),
+              icon: const Icon(Icons.handshake_outlined, color: Colors.white),
+              onPressed: () {
+                Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(builder: (context) => BottomView()),
+                    (Route<dynamic> route) => false);
+              },
+            ),
           ),
           body: TabBarView(
             children: [
@@ -65,11 +66,26 @@ class MyUpcomingMission extends StatefulWidget {
   State<MyUpcomingMission> createState() => _MyUpcomingMissionState();
 }
 
-class _MyUpcomingMissionState extends State<MyUpcomingMission> with TickerProviderStateMixin{
+class _MyUpcomingMissionState extends State<MyUpcomingMission>
+    with TickerProviderStateMixin {
   late TabController _tabController;
 
   Future<List<Event>>? getMission;
   List<Event> listMission = [];
+  List<String> months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec"
+  ];
 
   String id = '', name = '', email = '', photo = '';
 
@@ -77,7 +93,7 @@ class _MyUpcomingMissionState extends State<MyUpcomingMission> with TickerProvid
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-    
+
     prefLoad().then((value) {
       setState(() {
         id = value[0];
@@ -122,17 +138,23 @@ class _MyUpcomingMissionState extends State<MyUpcomingMission> with TickerProvid
                                     ListTile(
                                       leading: Column(
                                         children: <Widget>[
-                                          //TODO: Get date from DB
                                           Text(
-                                            "17",
+                                            DateTime.parse(listMission[index]
+                                                    .startDate)
+                                                .day
+                                                .toString(),
                                             style: TextStyle(
-                                                color: Colors.blue,
+                                                color: Colors.teal[300],
                                                 fontSize: 25,
                                                 fontWeight: FontWeight.bold),
                                           ),
                                           Text(
-                                            "SEP",
-                                            style: TextStyle(
+                                            months[(DateTime.parse(
+                                                        listMission[index]
+                                                            .startDate)
+                                                    .month) -
+                                                1],
+                                            style: const TextStyle(
                                                 fontSize: 20,
                                                 fontWeight: FontWeight.bold),
                                           )
@@ -140,7 +162,7 @@ class _MyUpcomingMissionState extends State<MyUpcomingMission> with TickerProvid
                                       ),
                                       title: Text(
                                         listMission[index].name,
-                                        style: new TextStyle(
+                                        style: const TextStyle(
                                             fontWeight: FontWeight.bold),
                                       ),
                                       subtitle: Text(
@@ -152,29 +174,31 @@ class _MyUpcomingMissionState extends State<MyUpcomingMission> with TickerProvid
                                     ),
                                     Row(
                                       children: <Widget>[
-                                        SizedBox(width: 70),
-                                        Icon(Icons.location_city),
-                                        SizedBox(width: 10),
+                                        const SizedBox(width: 70),
+                                        const Icon(
+                                          Icons.location_city,
+                                          color: Color.fromARGB(
+                                              255, 237, 137, 170),
+                                        ),
+                                        const SizedBox(width: 10),
                                         Text(
                                           listMission[index].venue,
-                                          style: TextStyle(),
                                         )
                                       ],
                                     ),
                                     Row(
                                       children: <Widget>[
-                                        SizedBox(width: 70),
-                                        Icon(Icons.star),
-                                        SizedBox(width: 10),
+                                        const SizedBox(width: 70),
+                                        Icon(
+                                          Icons.star_rounded,
+                                          color: Colors.amber[500],
+                                        ),
+                                        const SizedBox(width: 10),
                                         Text(
-                                          listMission[index]
-                                              .limitRegistration
-                                              .toString(),
-                                          style: TextStyle(),
-                                        )
+                                            '${listMission[index].points.toString()} Karma points'),
                                       ],
                                     ),
-                                    SizedBox(height: 10),
+                                    const SizedBox(height: 10),
                                   ],
                                 ),
                               ),
@@ -189,13 +213,12 @@ class _MyUpcomingMissionState extends State<MyUpcomingMission> with TickerProvid
                         },
                       );
                     } else {
-                      return Center(child: CircularProgressIndicator());
+                      return const Center(child: CircularProgressIndicator());
                     }
                   })),
         ));
   }
 }
-
 
 //Completed Mission
 class MyCompletedMission extends StatefulWidget {
@@ -205,11 +228,26 @@ class MyCompletedMission extends StatefulWidget {
   State<MyCompletedMission> createState() => _MyCompletedMissionState();
 }
 
-class _MyCompletedMissionState extends State<MyCompletedMission> with TickerProviderStateMixin{
+class _MyCompletedMissionState extends State<MyCompletedMission>
+    with TickerProviderStateMixin {
   late TabController _tabController;
 
   Future<List<Event>>? getMission;
   List<Event> listMission = [];
+  List<String> months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec"
+  ];
 
   String id = '', name = '', email = '', photo = '';
 
@@ -217,7 +255,7 @@ class _MyCompletedMissionState extends State<MyCompletedMission> with TickerProv
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-    
+
     prefLoad().then((value) {
       setState(() {
         id = value[0];
@@ -262,17 +300,23 @@ class _MyCompletedMissionState extends State<MyCompletedMission> with TickerProv
                                     ListTile(
                                       leading: Column(
                                         children: <Widget>[
-                                          //TODO: Get date from DB
                                           Text(
-                                            "17",
+                                            DateTime.parse(listMission[index]
+                                                    .startDate)
+                                                .day
+                                                .toString(),
                                             style: TextStyle(
-                                                color: Colors.blue,
+                                                color: Colors.teal[300],
                                                 fontSize: 25,
                                                 fontWeight: FontWeight.bold),
                                           ),
                                           Text(
-                                            "SEP",
-                                            style: TextStyle(
+                                            months[(DateTime.parse(
+                                                        listMission[index]
+                                                            .startDate)
+                                                    .month) -
+                                                1],
+                                            style: const TextStyle(
                                                 fontSize: 20,
                                                 fontWeight: FontWeight.bold),
                                           )
@@ -280,7 +324,7 @@ class _MyCompletedMissionState extends State<MyCompletedMission> with TickerProv
                                       ),
                                       title: Text(
                                         listMission[index].name,
-                                        style: new TextStyle(
+                                        style: const TextStyle(
                                             fontWeight: FontWeight.bold),
                                       ),
                                       subtitle: Text(
@@ -292,29 +336,31 @@ class _MyCompletedMissionState extends State<MyCompletedMission> with TickerProv
                                     ),
                                     Row(
                                       children: <Widget>[
-                                        SizedBox(width: 70),
-                                        Icon(Icons.location_city),
-                                        SizedBox(width: 10),
+                                        const SizedBox(width: 70),
+                                        const Icon(
+                                          Icons.location_city,
+                                          color: Color.fromARGB(
+                                              255, 237, 137, 170),
+                                        ),
+                                        const SizedBox(width: 10),
                                         Text(
                                           listMission[index].venue,
-                                          style: TextStyle(),
                                         )
                                       ],
                                     ),
                                     Row(
                                       children: <Widget>[
-                                        SizedBox(width: 70),
-                                        Icon(Icons.star),
-                                        SizedBox(width: 10),
+                                        const SizedBox(width: 70),
+                                        Icon(
+                                          Icons.star_rounded,
+                                          color: Colors.amber[500],
+                                        ),
+                                        const SizedBox(width: 10),
                                         Text(
-                                          listMission[index]
-                                              .limitRegistration
-                                              .toString(),
-                                          style: TextStyle(),
-                                        )
+                                            '${listMission[index].points.toString()} Karma points'),
                                       ],
                                     ),
-                                    SizedBox(height: 10),
+                                    const SizedBox(height: 10),
                                   ],
                                 ),
                               ),
@@ -335,4 +381,3 @@ class _MyCompletedMissionState extends State<MyCompletedMission> with TickerProv
         ));
   }
 }
-

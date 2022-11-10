@@ -22,8 +22,8 @@ saveMission(
         context: context,
         type: AlertType.success,
         onWillPopActive: true,
-        title: 'Successfully joined mission',
-        desc: 'This event was added to you joined missions!',
+        title: 'See you there!',
+        desc: 'This event was added to your joined missions!',
         style: AlertStyle(
             animationType: AnimationType.fromBottom,
             backgroundColor: Colors.white,
@@ -50,8 +50,8 @@ saveMission(
         context: context,
         type: AlertType.warning,
         onWillPopActive: true,
-        title: 'Successfully unregistered from mission',
-        desc: 'This event was deleted from your joined missions!',
+        title: 'Aww, see you next time',
+        desc: 'This event was removed from your joined missions',
         style: AlertStyle(
             animationType: AnimationType.fromBottom,
             backgroundColor: Colors.white,

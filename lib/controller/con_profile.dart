@@ -6,11 +6,11 @@ import 'package:karma_app/controller/api.dart';
 import 'package:karma_app/model/model_badge.dart';
 import 'package:karma_app/model/model_profile.dart';
 
-Future<List<Profile>> fetchProfile(List<Profile> fetch) async {
+Future<List<Profile>> fetchProfile(List<Profile> fetch, String id) async {
   print(
-      "BASE URL ${ApiConstant().baseUrl + ApiConstant().api + ApiConstant().profile}");
+      "BASE URL ${ApiConstant().baseUrl + ApiConstant().api + ApiConstant().profile + id}");
   var request = await Dio()
-      .get(ApiConstant().baseUrl + ApiConstant().api + ApiConstant().profile);
+      .get(ApiConstant().baseUrl + ApiConstant().api + ApiConstant().profile + id);
 
   for (Map<String, dynamic> profile in request.data) {
     List<Badge> badge = [];
