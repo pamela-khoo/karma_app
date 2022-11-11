@@ -60,9 +60,7 @@ class _HomeViewState extends State<HomeView> {
         leading: IconButton(
           icon: const Icon(Icons.handshake_outlined, color: Colors.white),
           onPressed: () {
-            Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(builder: (context) => BottomView()),
-                (Route<dynamic> route) => false);
+            pushAndRemove(context, BottomView());
           },
         ),
       ),
@@ -105,7 +103,8 @@ class _HomeViewState extends State<HomeView> {
                                   Text(
                                     months[(DateTime.parse(
                                                 listSlider[index].startDate)
-                                            .month) - 1],
+                                            .month) -
+                                        1],
                                     style: const TextStyle(
                                         fontSize: 20,
                                         fontWeight: FontWeight.bold),

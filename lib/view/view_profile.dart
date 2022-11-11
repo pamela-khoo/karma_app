@@ -126,19 +126,64 @@ class _ProfileViewState extends State<ProfileView> {
               leading: IconButton(
                 icon: const Icon(Icons.handshake_outlined, color: Colors.white),
                 onPressed: () {
-                  Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(builder: (context) => BottomView()),
-                      (Route<dynamic> route) => false);
+                  pushAndRemove(context, BottomView());
                 },
               ),
             ),
             floatingActionButton: FloatingActionButton(
               onPressed: () async {
                 preferences = await SharedPreferences.getInstance();
-                preferences.remove('login');
-                Navigator.of(context).pushAndRemoveUntil(
-                    MaterialPageRoute(builder: (context) => Login()),
-                    (Route<dynamic> route) => false);
+                showDialog(
+                  context: context,
+                  builder: (ctxt) {
+                    return AlertDialog(
+                        title: const Text(
+                          "Logout",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontFamily: 'Aleo',
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20.0,
+                          ),
+                        ),
+                        content: Container(
+                          height: 200.0,
+                          width: 200.0,
+                          child: Column(
+                            children: [
+                              const Text("Are you sure you want to logout?"),
+                              Container(
+                                height: 120.0,
+                                width: 120.0,
+                                decoration: const BoxDecoration(
+                                    image: DecorationImage(
+                                        image: AssetImage('assets/logout.png'),
+                                        fit: BoxFit.scaleDown)),
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  ElevatedButton(
+                                    child: Text("Logout"),
+                                    onPressed: () {
+                                      preferences.remove('login');
+                                      pushAndRemove(context, Login());
+                                    },
+                                  ),
+                                  ElevatedButton(
+                                    child: Text("Cancel"),
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ));
+                  },
+                );
               },
               child: Icon(Icons.logout_rounded),
               backgroundColor: Colors.teal,
@@ -382,8 +427,7 @@ class _ProfileViewState extends State<ProfileView> {
                                                           builder: (BuildContext
                                                               context) {
                                                             return AlertDialog(
-                                                              title: const Text(
-                                                                  'List of badges'),
+                                                              title: const Text('List of badges'),
                                                               content: Container(
                                                                   height: 400.0,
                                                                   width: 300.0,
@@ -445,23 +489,14 @@ class _ProfileViewState extends State<ProfileView> {
                                                 onTap: () async {
                                                   await showDialog(
                                                       context: context,
-                                                      builder:
-                                                          (context) =>
+                                                      builder:(context) =>
                                                               AlertDialog(
-                                                                content:
-                                                                    Container(
+                                                                content: Container(
                                                                   child: Column(
-                                                                      mainAxisSize:
-                                                                          MainAxisSize
-                                                                              .min,
-                                                                      children: <
-                                                                          Widget>[
-                                                                        Image.network(listProfile[index]
-                                                                            .badge[indexBadge]
-                                                                            .badge_img),
-                                                                        Text(listProfile[index]
-                                                                            .badge[indexBadge]
-                                                                            .badge_description),
+                                                                      mainAxisSize:MainAxisSize.min,
+                                                                      children: <Widget>[
+                                                                        Image.network(listProfile[index].badge[indexBadge].badge_img),
+                                                                        Text(listProfile[index].badge[indexBadge].badge_description),
                                                                       ]),
                                                                 ),
                                                               ));
@@ -472,10 +507,7 @@ class _ProfileViewState extends State<ProfileView> {
                                                   decoration: BoxDecoration(
                                                     image: DecorationImage(
                                                         image: NetworkImage(
-                                                            listProfile[index]
-                                                                .badge[
-                                                                    indexBadge]
-                                                                .badge_img)),
+                                                            listProfile[index].badge[indexBadge].badge_img)),
                                                   ),
                                                 ),
                                               );
@@ -484,7 +516,7 @@ class _ProfileViewState extends State<ProfileView> {
                                   ]);
                                 });
                           } else {
-                            return Center(child: CircularProgressIndicator());
+                            return const Center(child: CircularProgressIndicator());
                           }
                         })))));
   }

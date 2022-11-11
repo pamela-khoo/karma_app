@@ -29,8 +29,7 @@ class CustomError extends StatelessWidget {
                 decoration: const BoxDecoration(
                     image: DecorationImage(
                         image: AssetImage('assets/error.png'),
-                        fit: BoxFit.scaleDown),
-                    shape: BoxShape.circle),
+                        fit: BoxFit.scaleDown)),
               ),
               Text(
                 kDebugMode

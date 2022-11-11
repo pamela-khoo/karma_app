@@ -6,6 +6,7 @@ import 'package:karma_app/controller/api.dart';
 import 'package:karma_app/view/bottom_view.dart';
 import 'package:karma_app/view/login.dart';
 import 'package:karma_app/view/view_home.dart';
+import 'package:karma_app/widget/router.dart';
 import '../main.dart';
 
 class Register extends StatefulWidget {
@@ -41,11 +42,7 @@ class _RegisterState extends State<Register> {
         msg: 'Registration Successful',
         toastLength: Toast.LENGTH_SHORT,
       );
-      Navigator.push(context,
-        MaterialPageRoute(
-          builder: (context) => BottomView(),
-        ),
-      );
+      pushPage(context, BottomView());
     }
   }
   bool isPasswordVisible = false;
@@ -72,14 +69,14 @@ class _RegisterState extends State<Register> {
                       padding: const EdgeInsets.only(bottom: 35, left: 85),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          const Text(
+                        children: const [
+                          Text(
                             ' Registration',
                             style: TextStyle(
                                 fontSize: 30,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white,
-                                shadows: const [
+                                shadows: [
                                   Shadow(
                                       color: Colors.black45,
                                       offset: Offset(1, 1),
@@ -212,10 +209,7 @@ class _RegisterState extends State<Register> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => Login()),
-                    );
+                    pushAndRemove(context, Login());
                   },
                   child: Container(
                     height: 53,

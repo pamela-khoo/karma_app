@@ -45,12 +45,7 @@ class _LoginState extends State<Login> {
       //Store data to shared preferences
       prefLogin(id: data[0], name: data[1], email: data[2]);
 
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => BottomView(),
-        ),
-      );
+      pushPage(context, BottomView());
     } else {
       Fluttertoast.showToast(
         backgroundColor: Colors.red,
@@ -241,10 +236,6 @@ class _LoginState extends State<Login> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(builder: (context) => const Register()),
-                    // );
                     pushAndRemove(context, Register());
                   },
                   child: Container(

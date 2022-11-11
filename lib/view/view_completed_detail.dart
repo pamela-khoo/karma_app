@@ -53,7 +53,7 @@ class _CompletedDetailViewState extends State<CompletedDetailView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: new Text('Detail Page'),
+        title: const Text('Detail Page'),
         leading: GestureDetector(
             onTap: () => Navigator.of(context).pop(false),
             child: Icon(Icons.arrow_back)),
