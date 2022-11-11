@@ -78,36 +78,38 @@ class _LoginState extends State<Login> {
           height: double.infinity,
           width: double.infinity,
           alignment: Alignment.center,
-          decoration: BoxDecoration(
-              gradient: LinearGradient(colors: [
-            Color.fromARGB(200, 45, 125, 117),
-            Color.fromARGB(255, 40, 125, 92)
-          ])),
+          decoration: BoxDecoration(color: Colors.white),
           child: SingleChildScrollView(
             child: Column(
               children: [
+                Container(
+                  height: 150.0,
+                  width: 150.0,
+                  decoration: const BoxDecoration(
+                      image: DecorationImage(
+                          image: AssetImage('assets/karma_logo_2.png'),
+                          fit: BoxFit.scaleDown),
+                      ),
+                ),
                 Align(
-                  alignment: Alignment.topRight,
+                  alignment: Alignment.topLeft,
                   child: Container(
                     height: 100,
                     width: 300,
                     child: Padding(
-                      padding: const EdgeInsets.only(bottom: 35, left: 85),
+                      padding: const EdgeInsets.symmetric(horizontal: 30)
+                          .copyWith(bottom: 10),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          const Text(
-                            ' Login Page',
+                        children: const [
+                          Text(
+                            ' Login',
                             style: TextStyle(
                                 fontSize: 30,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                                shadows: const [
-                                  Shadow(
-                                      color: Colors.black45,
-                                      offset: Offset(1, 1),
-                                      blurRadius: 5)
-                                ]),
+                                color: Colors.black,
+                                fontFamily: 'Aleo',
+                                ),
                           ),
                         ],
                       ),
@@ -124,27 +126,29 @@ class _LoginState extends State<Login> {
                     controller: user,
                     style: const TextStyle(color: Colors.white, fontSize: 14.5),
                     decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Color.fromARGB(255, 238, 240, 241),
                         prefixIconConstraints:
                             const BoxConstraints(minWidth: 45),
                         prefixIcon: const Icon(
                           Icons.alternate_email_outlined,
-                          color: Colors.white70,
+                          color: Color.fromARGB(255, 0, 150, 136),
                           size: 22,
                         ),
                         border: InputBorder.none,
                         hintText: 'Enter Username',
                         hintStyle: const TextStyle(
-                            color: Colors.white60, fontSize: 14.5),
+                            color: Colors.black54, fontSize: 14.5),
                         enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(100).copyWith(
                                 bottomRight: const Radius.circular(0)),
                             borderSide:
-                                const BorderSide(color: Colors.white38)),
+                                const BorderSide(color:Color.fromARGB(255, 238, 240, 241))),
                         focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(100).copyWith(
                                 bottomRight: const Radius.circular(0)),
-                            borderSide:
-                                const BorderSide(color: Colors.white70))),
+                            borderSide: BorderSide(
+                                color: Color.fromARGB(255, 208, 210, 211)))),
                   ),
                 ),
                 const SizedBox(
@@ -158,11 +162,13 @@ class _LoginState extends State<Login> {
                     style: const TextStyle(color: Colors.white, fontSize: 14.5),
                     obscureText: isPasswordVisible ? false : true,
                     decoration: InputDecoration(
+                      filled: true,
+                        fillColor: Color.fromARGB(255, 238, 240, 241),
                         prefixIconConstraints:
                             const BoxConstraints(minWidth: 45),
                         prefixIcon: const Icon(
                           Icons.lock,
-                          color: Colors.white70,
+                          color: Colors.teal,
                           size: 22,
                         ),
                         suffixIconConstraints:
@@ -183,18 +189,18 @@ class _LoginState extends State<Login> {
                         ),
                         border: InputBorder.none,
                         hintText: 'Enter Password',
-                        hintStyle: const TextStyle(
-                            color: Colors.white60, fontSize: 14.5),
+                       hintStyle: const TextStyle(
+                            color: Colors.black54, fontSize: 14.5),
                         enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(100).copyWith(
                                 bottomRight: const Radius.circular(0)),
                             borderSide:
-                                const BorderSide(color: Colors.white38)),
+                                const BorderSide(color:Color.fromARGB(255, 238, 240, 241))),
                         focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(100).copyWith(
                                 bottomRight: const Radius.circular(0)),
-                            borderSide:
-                                const BorderSide(color: Colors.white70))),
+                            borderSide: BorderSide(
+                                color: Color.fromARGB(255, 208, 210, 211)))),
                   ),
                 ),
                 const SizedBox(
@@ -218,10 +224,10 @@ class _LoginState extends State<Login> {
                               offset: const Offset(2, 2))
                         ],
                         borderRadius: BorderRadius.circular(100),
-                        color: Colors.white.withOpacity(.8)),
+                        color: Colors.teal.withOpacity(.8)),
                     child: Text('Login',
                         style: TextStyle(
-                            color: Colors.black.withOpacity(.8),
+                            color: Colors.white,
                             fontSize: 15,
                             fontWeight: FontWeight.bold)),
                   ),
@@ -230,7 +236,7 @@ class _LoginState extends State<Login> {
                   height: 50,
                 ),
                 const Text('Don\'t have an account?',
-                    style: TextStyle(color: Colors.white70, fontSize: 13)),
+                    style: TextStyle(color: Color.fromARGB(255, 77, 77, 77), fontSize: 13)),
                 const SizedBox(
                   height: 20,
                 ),
@@ -238,19 +244,23 @@ class _LoginState extends State<Login> {
                   onTap: () {
                     pushAndRemove(context, Register());
                   },
-                  child: Container(
+                 child: Container(
                     height: 53,
                     width: double.infinity,
                     margin: const EdgeInsets.symmetric(horizontal: 30),
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
-                      border: Border.all(color: Colors.white60),
-                      borderRadius: BorderRadius.circular(100)
-                          .copyWith(bottomRight: const Radius.circular(0)),
-                    ),
+                        boxShadow: [
+                          BoxShadow(
+                              blurRadius: 4,
+                              color: Colors.black12.withOpacity(.2),
+                              offset: const Offset(2, 2))
+                        ],
+                        borderRadius: BorderRadius.circular(100),
+                        color: Colors.white.withOpacity(.8)),
                     child: Text('Sign Up',
                         style: TextStyle(
-                            color: Colors.white.withOpacity(.8),
+                            color: Colors.black.withOpacity(.8),
                             fontSize: 15,
                             fontWeight: FontWeight.bold)),
                   ),
