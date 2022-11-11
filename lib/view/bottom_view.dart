@@ -17,7 +17,11 @@ class _BottomViewState extends State<BottomView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return  WillPopScope(
+         onWillPop: () async{
+           return false;
+         },
+    child: Scaffold(
       bottomNavigationBar: BottomNavigationBar(
         onTap: whenTap,
         currentIndex: currentIndex,
@@ -56,6 +60,7 @@ class _BottomViewState extends State<BottomView> {
       ),
       backgroundColor: Colors.red,
       body: body[currentIndex],
+    )
     );
   }
 
@@ -64,4 +69,5 @@ class _BottomViewState extends State<BottomView> {
       currentIndex = tap;
     });
   }
+  
 }

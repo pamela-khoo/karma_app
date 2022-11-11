@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:karma_app/controller/con_mission.dart';
 import 'package:karma_app/model/model_event.dart';
 import 'package:karma_app/view/bottom_view.dart';
+import 'package:karma_app/view/custom_error.dart';
 import 'package:karma_app/view/view_completed_detail.dart';
 import 'package:karma_app/view/view_detail.dart';
 import 'package:karma_app/view/view_upcoming_detail.dart';
@@ -116,6 +117,9 @@ class _MyUpcomingMissionState extends State<MyUpcomingMission>
                   future: getMission,
                   builder: (BuildContext context,
                       AsyncSnapshot<List<Event>> snapshot) {
+                                  ErrorWidget.builder = (FlutterErrorDetails errorDetails) {
+              return CustomError(errorDetails: errorDetails);
+            };
                     if (snapshot.connectionState == ConnectionState.done) {
                       return ListView.builder(
                         itemCount: snapshot.data!.length,
@@ -278,6 +282,9 @@ class _MyCompletedMissionState extends State<MyCompletedMission>
                   future: getMission,
                   builder: (BuildContext context,
                       AsyncSnapshot<List<Event>> snapshot) {
+                        ErrorWidget.builder = (FlutterErrorDetails errorDetails) {
+              return CustomError(errorDetails: errorDetails);
+            };
                     if (snapshot.connectionState == ConnectionState.done) {
                       return ListView.builder(
                         itemCount: snapshot.data!.length,

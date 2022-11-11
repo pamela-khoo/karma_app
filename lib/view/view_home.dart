@@ -8,6 +8,7 @@ import 'package:karma_app/controller/api.dart';
 import 'package:karma_app/controller/con_event.dart';
 import 'package:karma_app/model/model_event.dart';
 import 'package:karma_app/view/bottom_view.dart';
+import 'package:karma_app/view/custom_error.dart';
 import 'package:karma_app/view/view_detail.dart';
 import 'package:karma_app/widget/router.dart';
 
@@ -42,12 +43,12 @@ class _HomeViewState extends State<HomeView> {
     getSlider = fetchEvent(listSlider);
   }
 
-  //Pull to refresh: get updated list of events 
+  //Pull to refresh: get updated list of events
   Future refresh() async {
     setState(() => listSlider.clear());
-      setState(() {
-        getSlider = fetchEvent(listSlider);
-      });
+    setState(() {
+      getSlider = fetchEvent(listSlider);
+    });
   }
 
   @override
@@ -59,7 +60,9 @@ class _HomeViewState extends State<HomeView> {
         leading: IconButton(
           icon: const Icon(Icons.handshake_outlined, color: Colors.white),
           onPressed: () {
-             Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => BottomView()), (Route<dynamic> route) => false);
+            Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (context) => BottomView()),
+                (Route<dynamic> route) => false);
           },
         ),
       ),
@@ -68,6 +71,9 @@ class _HomeViewState extends State<HomeView> {
         child: FutureBuilder<List<Event>>(
           future: getSlider,
           builder: (BuildContext context, AsyncSnapshot<List<Event>> snapshot) {
+            ErrorWidget.builder = (FlutterErrorDetails errorDetails) {
+              return CustomError(errorDetails: errorDetails);
+            };
             if (snapshot.connectionState == ConnectionState.done) {
               //Display data
               return ListView.builder(
@@ -98,8 +104,8 @@ class _HomeViewState extends State<HomeView> {
                                   ),
                                   Text(
                                     months[(DateTime.parse(
-                                            listSlider[index].startDate)
-                                        .month)-1],
+                                                listSlider[index].startDate)
+                                            .month) - 1],
                                     style: const TextStyle(
                                         fontSize: 20,
                                         fontWeight: FontWeight.bold),
@@ -108,8 +114,8 @@ class _HomeViewState extends State<HomeView> {
                               ),
                               title: Text(
                                 listSlider[index].name,
-                                style:
-                                    const TextStyle(fontWeight: FontWeight.bold),
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold),
                               ),
                               subtitle: Text(
                                 listSlider[index].organization,
@@ -161,7 +167,9 @@ class _HomeViewState extends State<HomeView> {
               );
             } else {
               //Return a circular progress indicator.
-              return const Center(child: CircularProgressIndicator(),);
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
             }
           },
         ),

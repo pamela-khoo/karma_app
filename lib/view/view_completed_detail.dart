@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:future_progress_dialog/future_progress_dialog.dart';
 import 'package:karma_app/controller/api.dart';
 import 'package:karma_app/controller/con_detail.dart';
@@ -8,6 +9,7 @@ import 'package:karma_app/controller/con_save_mission.dart';
 import 'package:karma_app/model/model_event.dart';
 import 'package:karma_app/widget/shared_pref.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class CompletedDetailView extends StatefulWidget {
   int eventID;
@@ -56,8 +58,7 @@ class _CompletedDetailViewState extends State<CompletedDetailView> {
             onTap: () => Navigator.of(context).pop(false),
             child: Icon(Icons.arrow_back)),
       ),
-      body: Container(
-          child: FutureBuilder(
+body: FutureBuilder(
         future: getDetail,
         builder: (BuildContext context, AsyncSnapshot<List<Event>> snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
@@ -67,83 +68,169 @@ class _CompletedDetailViewState extends State<CompletedDetailView> {
                     itemCount: snapshot.data!.length,
                     itemBuilder: (BuildContext context, int index) {
                       return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Padding(
-                            child: new Text(
-                              'EVENT DETAILS',
-                              style: new TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 20.0),
-                              textAlign: TextAlign.center,
+                            padding: const EdgeInsets.all(20.0),
+                            child: Text(
+                              listDetail[index].name,
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 24.0),
                             ),
-                            padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
                           ),
+                          InkWell(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Container(
+                                      height: 50,
+                                      width: 100,
+                                      decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                              image: NetworkImage(
+                                                  listDetail[index]
+                                                      .orgImageUrl),
+                                              fit: BoxFit.fill),
+                                          shape: BoxShape.circle)),
+                                  Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Text(
+                                          listDetail[index].organization,
+                                          style: const TextStyle(
+                                            fontSize: 16.0,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        const Text(
+                                          'Tap to learn more',
+                                          style: TextStyle(
+                                            fontSize: 16.0,
+                                            fontStyle: FontStyle.italic,
+                                            color: Color.fromRGBO(
+                                                155, 155, 155, 1.0),
+                                          ),
+                                        ),
+                                      ]),
+                                ],
+                              ),
+                              onTap: () => launch(listDetail[index].orgUrl)
+                            ),
+
                           Padding(
-                            //`widget` is the current configuration. A State object's configuration
-                            //is the corresponding StatefulWidget instance.
+                            padding: EdgeInsets.all(16.0),
                             child: Image.network(listDetail[index].imageUrl),
-                            padding: EdgeInsets.all(12.0),
                           ),
                           Padding(
-                            child: new Text(
-                              'NAME : ${listDetail[index].name}',
-                              style: new TextStyle(fontWeight: FontWeight.bold),
-                              textAlign: TextAlign.left,
+                            padding: EdgeInsets.only(top: 20.0, left: 20.0),
+                            child: Row(
+                              children: <Widget>[
+                                Icon(
+                                  Icons.calendar_month,
+                                  color: Colors.blue[300],
+                                ),
+                                const SizedBox(width: 10),
+
+                                listDetail[index].startDate == listDetail[index].endDate
+                                          ? Text(
+                                              listDetail[index].startDate,
+                                            )
+                                          : Text(
+                                              '${listDetail[index].startDate} to ${listDetail[index].endDate}',
+                                            )
+                              ],
                             ),
-                            padding: EdgeInsets.all(20.0),
                           ),
                           Padding(
-                            child: new Text(
-                              'DESCRIPTION : ${listDetail[index].description}',
-                              style: new TextStyle(fontWeight: FontWeight.bold),
-                              textAlign: TextAlign.left,
+                            padding: EdgeInsets.only(top: 20.0, left: 20.0),
+                            child: Row(
+                              children: <Widget>[
+                                Icon(
+                                  Icons.access_time_filled_sharp,
+                                  color: Colors.indigo[300],
+                                ),
+                                SizedBox(width: 10),
+                                Text(
+                                  '${listDetail[index].startTime} to ${listDetail[index].endTime}',
+                                  style: TextStyle(),
+                                )
+                              ],
                             ),
-                            padding: EdgeInsets.all(20.0),
                           ),
                           Padding(
-                            child: new Text(
-                              'VENUE : ${listDetail[index].venue}',
-                              style: new TextStyle(fontWeight: FontWeight.bold),
-                              textAlign: TextAlign.left,
-                            ),
-                            padding: EdgeInsets.all(20.0),
+                            padding: EdgeInsets.only(top: 20.0, left: 20.0),
+                            child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                   Icon(
+                                  Icons.location_on,
+                                  color: Colors.deepOrange[300],
+                                ),
+                                SizedBox(width: 10),
+                                  Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Text(
+                                          listDetail[index].venue,
+                                        ),
+                                        ElevatedButton(
+                                           style: TextButton.styleFrom(
+                                            primary: Colors.blue,
+      backgroundColor: Colors.white, // Background Color
+),
+                                          child: const Text('View on Google Maps'),
+                                         onPressed: () => launch(ApiConstant().mapSearch+listDetail[index].organization)
+                                        ),
+                                      ]),
+                                ],
+                              ),
                           ),
                           Padding(
-                            child: new Text(
-                              'ORGANIZATION : ${listDetail[index].organization}',
-                              style: new TextStyle(fontWeight: FontWeight.bold),
-                              textAlign: TextAlign.left,
+                            padding: EdgeInsets.only(top: 20.0, left: 20.0),
+                            child: Row(
+                              children: <Widget>[
+                                Icon(
+                                  Icons.stars,
+                                  color: Colors.yellow[700],
+                                ),
+                                SizedBox(width: 10),
+                                Text(
+                                  'Earn ${listDetail[index].points.toString()} Karma points',
+                                )
+                              ],
                             ),
-                            padding: EdgeInsets.all(20.0),
                           ),
                           Padding(
-                            child: new Text(
-                              'DATE : ${listDetail[index].startDate} to ${listDetail[index].endDate}',
-                              style: new TextStyle(fontWeight: FontWeight.bold),
-                              textAlign: TextAlign.left,
-                            ),
                             padding: EdgeInsets.all(20.0),
-                          ),
-                          Padding(
-                            child: new Text(
-                              'TIME : ${listDetail[index].startTime} to ${listDetail[index].endTime}',
-                              style: new TextStyle(fontWeight: FontWeight.bold),
-                              textAlign: TextAlign.left,
+                            child: Row(
+                              children: <Widget>[
+                                Icon(
+                                  Icons.assignment,
+                                  color: Colors.cyan[700],
+                                ),
+                                Expanded(
+                                    child: Html(
+                                  data: listDetail[index].description,
+                                )),
+                              ],
                             ),
-                            padding: EdgeInsets.all(20.0),
                           ),
-                          
                         ],
                       );
                     })
               ],
             );
           } else {
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(),
             );
           }
         },
-      )),
+      ),
     );
   }
 }

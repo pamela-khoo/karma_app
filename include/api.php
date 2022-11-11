@@ -63,7 +63,7 @@ if (isset($_GET['events_all'])) {
         $row['cat_name'] = $data['cat_name'];
         $row['org_name'] = $data['org_name'];
         $row['org_url'] = $data['org_url'];
-        $row['logo_url'] = $image_path.$data['logo_url'];
+        $row['logo_url'] = $image_logo.$data['logo_url'];
         $row['points'] = $data['points'];
         $row['image_url'] = $image_path.$data['image_url'];
         $row['limit_registration'] = $data['limit_registration'];
@@ -103,7 +103,7 @@ if (isset($_GET['events_all'])) {
         $row['cat_name'] = $data['cat_name'];
         $row['org_name'] = $data['org_name'];
         $row['org_url'] = $data['org_url'];
-        $row['logo_url'] = $image_path.$data['logo_url'];
+        $row['logo_url'] = $image_logo.$data['logo_url'];
         $row['points'] = $data['points'];
         $row['image_url'] = $image_path.$data['image_url'];
         $row['limit_registration'] = $data['limit_registration'];
@@ -143,7 +143,7 @@ if (isset($_GET['events_all'])) {
         $row['cat_name'] = $data['cat_name'];
         $row['org_name'] = $data['org_name'];
         $row['org_url'] = $data['org_url'];
-        $row['logo_url'] = $image_path.$data['logo_url'];
+        $row['logo_url'] = $image_logo.$data['logo_url'];
         $row['points'] = $data['points'];
         $row['image_url'] = $image_path.$data['image_url'];
         $row['limit_registration'] = $data['limit_registration'];
@@ -183,7 +183,7 @@ if (isset($_GET['events_all'])) {
         $row['cat_name'] = $data['cat_name'];
         $row['org_name'] = $data['org_name'];
         $row['org_url'] = $data['org_url'];
-        $row['logo_url'] = $image_path.$data['logo_url'];
+        $row['logo_url'] = $image_logo.$data['logo_url'];
         $row['points'] = $data['points'];
         $row['image_url'] = $image_path.$data['image_url'];
         $row['limit_registration'] = $data['limit_registration'];
@@ -223,7 +223,7 @@ if (isset($_GET['events_all'])) {
             $row['cat_name'] = $data['cat_name'];
             $row['org_name'] = $data['org_name'];
             $row['org_url'] = $data['org_url'];
-            $row['logo_url'] = $image_path.$data['logo_url'];
+            $row['logo_url'] = $image_logo.$data['logo_url'];
             $row['points'] = $data['points'];
             $row['image_url'] = $image_path.$data['image_url'];
             $row['limit_registration'] = $data['limit_registration'];
