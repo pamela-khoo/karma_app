@@ -50,6 +50,7 @@ dependencies:
   overlay_support:
   flutter_html: ^2.2.1
   url_launcher: 
+  confetti: ^0.7.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -87,6 +88,8 @@ flutter:
     - assets/logout.png
     - assets/karma_logo.png
     - assets/karma_logo_2.png
+    - assets/leaderboard.jpg
+    - assets/leaderboard_2.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

@@ -32,7 +32,7 @@ class _BottomViewState extends State<BottomView> {
                 color: Colors.teal[300],
               ),
               label: 'Home',
-              activeIcon: Icon(
+              activeIcon: const Icon(
                 Icons.home,
                 color: Colors.teal,
               )),
@@ -42,7 +42,7 @@ class _BottomViewState extends State<BottomView> {
                 color: Colors.teal[300],
               ),
               label: 'Missions',
-              activeIcon: Icon(
+              activeIcon: const Icon(
                 Icons.leaderboard,
                 color: Colors.teal,
               )),
@@ -52,13 +52,13 @@ class _BottomViewState extends State<BottomView> {
                 color: Colors.teal[300],
               ),
               label: 'Profile',
-              activeIcon: Icon(
+              activeIcon: const Icon(
                 Icons.account_circle,
                 color: Colors.teal,
               ))
         ],
       ),
-      backgroundColor: Colors.red,
+      backgroundColor: Colors.white,
       body: body[currentIndex],
     )
     );

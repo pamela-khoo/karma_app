@@ -324,20 +324,10 @@ if (isset($_GET['events_all'])) {
     $query = "SELECT id AS user_id, CONCAT(CONCAT(first_name,' '),last_name) AS name, points FROM user ORDER BY points DESC LIMIT 5"; 
     $sql = mysqli_query($conn, $query); 
 
-    while ($data = mysqli_fetch_assoc($sql)) { 
-        $query ="SELECT * FROM earned_badges JOIN badges ON earned_badges.badge_key = badges.badge_key WHERE earned_badges.user_id = '" .$data['user_id']. "' ORDER BY user_id ASC"; 
-    
-        $badgeFetch = mysqli_query($conn, $query); 
-        $getBadge = []; 
-        foreach ($badgeFetch as $key => $value) { 
-            $getBadge[$key]['badge_name'] = $value['badge_name']; 
-            $getBadge[$key]['badge_img'] = $image_badge.$value['badge_img']; 
-        }
-
-        $row['user_id'] = $data['user_id'];
+    while ($data = mysqli_fetch_assoc($sql)) {
+        $row['id'] = $data['user_id'];
         $row['name'] = $data['name'];
         $row['points'] = $data['points'];
-        $row['badge'] = $getBadge;
 
         array_push($array, $row);
     }

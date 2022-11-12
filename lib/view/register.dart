@@ -112,14 +112,14 @@ class _RegisterState extends State<Register> {
                       .copyWith(bottom: 10),
                   child: TextField(
                     controller: first,
-                     style: const TextStyle(color: Colors.white, fontSize: 14.5),
+                     style: const TextStyle(color: Colors.black, fontSize: 14.5),
                     decoration: InputDecoration(
                         filled: true,
                         fillColor: Color.fromARGB(255, 238, 240, 241),
                         prefixIconConstraints:
                             const BoxConstraints(minWidth: 45),
                         prefixIcon: const Icon(
-                          Icons.alternate_email_outlined,
+                          Icons.account_box_rounded,
                           color: Color.fromARGB(255, 0, 150, 136),
                           size: 22,
                         ),
@@ -147,14 +147,14 @@ class _RegisterState extends State<Register> {
                       .copyWith(bottom: 10),
                   child: TextField(
                     controller: last,
-                    style: const TextStyle(color: Colors.white, fontSize: 14.5),
+                    style: const TextStyle(color: Colors.black, fontSize: 14.5),
                     decoration: InputDecoration(
                         filled: true,
                         fillColor: Color.fromARGB(255, 238, 240, 241),
                         prefixIconConstraints:
                             const BoxConstraints(minWidth: 45),
                         prefixIcon: const Icon(
-                          Icons.alternate_email_outlined,
+                          Icons.account_box_rounded,
                           color: Color.fromARGB(255, 0, 150, 136),
                           size: 22,
                         ),
@@ -182,15 +182,14 @@ class _RegisterState extends State<Register> {
                       .copyWith(bottom: 10),
                   child: TextField(
                     controller: user,
-                    style: const TextStyle(color: Colors.white, fontSize: 14.5),
-                    obscureText: isPasswordVisible ? false : true,
+                    style: const TextStyle(color: Colors.black, fontSize: 14.5),
                     decoration: InputDecoration(
                       filled: true,
                         fillColor: Color.fromARGB(255, 238, 240, 241),
                         prefixIconConstraints:
                             const BoxConstraints(minWidth: 45),
                         prefixIcon: const Icon(
-                          Icons.lock,
+                          Icons.alternate_email_outlined,
                           color: Colors.teal,
                           size: 22,
                         ),
@@ -218,7 +217,7 @@ class _RegisterState extends State<Register> {
                       .copyWith(bottom: 10),
                   child: TextField(
                     controller: pass,
-                    style: const TextStyle(color: Colors.white, fontSize: 14.5),
+                    style: const TextStyle(color: Colors.black, fontSize: 14.5),
                     obscureText: isPasswordVisible ? false : true,
                     decoration: InputDecoration(
                       filled: true,
@@ -242,7 +241,7 @@ class _RegisterState extends State<Register> {
                             isPasswordVisible
                                 ? Icons.visibility
                                 : Icons.visibility_off,
-                            color: Colors.white70,
+                            color: Color.fromARGB(255, 61, 61, 61),
                             size: 22,
                           ),
                         ),

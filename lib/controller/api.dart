@@ -1,6 +1,7 @@
 class ApiConstant {
   String baseUrl = "http://192.168.101.116/karma/karma_app/"; //IP address
   String webUrl = "http://192.168.101.116//karma/karma_web/";
+  String mapSearch = "https://www.google.com/maps/search/?api=1&query=";
   String login = "utils/login.php";
   String register = "utils/register.php";
   String api = "include/api.php?";
@@ -16,6 +17,6 @@ class ApiConstant {
   String completedMission = "completed_mission=";
   String profile = "profile=";
   String badge = "badge";
+  String leaderboard = "leaderboard";
   String registrationLimit = "registration_limit";
-  String mapSearch = "https://www.google.com/maps/search/?api=1&query=";
 }

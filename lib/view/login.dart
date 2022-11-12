@@ -124,7 +124,7 @@ class _LoginState extends State<Login> {
                       .copyWith(bottom: 10),
                   child: TextField(
                     controller: user,
-                    style: const TextStyle(color: Colors.white, fontSize: 14.5),
+                    style: const TextStyle(color: Colors.black, fontSize: 14.5),
                     decoration: InputDecoration(
                         filled: true,
                         fillColor: Color.fromARGB(255, 238, 240, 241),
@@ -159,7 +159,7 @@ class _LoginState extends State<Login> {
                       .copyWith(bottom: 10),
                   child: TextField(
                     controller: pass,
-                    style: const TextStyle(color: Colors.white, fontSize: 14.5),
+                    style: const TextStyle(color: Colors.black, fontSize: 14.5),
                     obscureText: isPasswordVisible ? false : true,
                     decoration: InputDecoration(
                       filled: true,
@@ -183,7 +183,7 @@ class _LoginState extends State<Login> {
                             isPasswordVisible
                                 ? Icons.visibility
                                 : Icons.visibility_off,
-                            color: Colors.white70,
+                            color: Color.fromARGB(255, 61, 61, 61),
                             size: 22,
                           ),
                         ),

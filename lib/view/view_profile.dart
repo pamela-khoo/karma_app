@@ -11,6 +11,7 @@ import 'package:karma_app/view/bottom_view.dart';
 import 'package:karma_app/view/custom_error.dart';
 import 'package:karma_app/view/login.dart';
 import 'package:karma_app/view/notification_badge.dart';
+import 'package:karma_app/view/view_leaderboard.dart';
 import 'package:karma_app/widget/router.dart';
 import 'package:karma_app/widget/shared_pref.dart';
 import 'package:overlay_support/overlay_support.dart';
@@ -116,6 +117,44 @@ class _ProfileViewState extends State<ProfileView> {
     }
   }
 
+  logout() {
+    return Container(
+      height: 200.0,
+      width: 200.0,
+      child: Column(
+        children: [
+          const Text("Are you sure you want to logout?"),
+          Container(
+            height: 120.0,
+            width: 120.0,
+            decoration: const BoxDecoration(
+                image: DecorationImage(
+                    image: AssetImage('assets/logout.png'),
+                    fit: BoxFit.scaleDown)),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              ElevatedButton(
+                child: Text("Logout"),
+                onPressed: () {
+                  preferences.remove('login');
+                  pushAndRemove(context, Login());
+                },
+              ),
+              ElevatedButton(
+                child: Text("Cancel"),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return OverlaySupport(
@@ -146,42 +185,7 @@ class _ProfileViewState extends State<ProfileView> {
                             fontSize: 20.0,
                           ),
                         ),
-                        content: Container(
-                          height: 200.0,
-                          width: 200.0,
-                          child: Column(
-                            children: [
-                              const Text("Are you sure you want to logout?"),
-                              Container(
-                                height: 120.0,
-                                width: 120.0,
-                                decoration: const BoxDecoration(
-                                    image: DecorationImage(
-                                        image: AssetImage('assets/logout.png'),
-                                        fit: BoxFit.scaleDown)),
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  ElevatedButton(
-                                    child: Text("Logout"),
-                                    onPressed: () {
-                                      preferences.remove('login');
-                                      pushAndRemove(context, Login());
-                                    },
-                                  ),
-                                  ElevatedButton(
-                                    child: Text("Cancel"),
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ));
+                        content: logout());
                   },
                 );
               },
@@ -217,6 +221,22 @@ class _ProfileViewState extends State<ProfileView> {
                                     ),
 
                                     //ROW 1
+                                    Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 20.0),
+                                        child: Container(
+                                          height: 50,
+                                          width: double.infinity,
+                                          child: Row(children: [
+                                            Text(
+                                              'Welcome back, $name!',
+                                              style: const TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 22),
+                                            ),
+                                          ]),
+                                        )),
+
                                     Padding(
                                         padding: const EdgeInsets.all(20.0),
                                         child: Row(
@@ -395,8 +415,58 @@ class _ProfileViewState extends State<ProfileView> {
                                     ),
 
                                     //ROW 3
+                                    Container(
+                                      height: 200.0,
+                                      width: 300.0,
+                                      decoration: const BoxDecoration(
+                                          image: DecorationImage(
+                                              image: AssetImage(
+                                                  'assets/leaderboard.jpg'),
+                                              fit: BoxFit.scaleDown)),
+                                    ),
+
+                                    InkWell(
+                                      onTap: () {
+                                        pushPage(context, LeaderboardView());
+                                      },
+                                      child: Container(
+                                        height: 50,
+                                        width: 350,
+                                        padding:
+                                            const EdgeInsets.only(left: 20),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white.withOpacity(.8),
+                                          boxShadow: [
+                                            BoxShadow(
+                                                blurRadius: 4,
+                                                color: Colors.black12
+                                                    .withOpacity(.2),
+                                                offset: const Offset(2, 2))
+                                          ],
+                                        ),
+                                        child: Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: const [
+                                            Icon(
+                                              Icons.emoji_events,
+                                              color: Colors.teal,
+                                              size: 22,
+                                            ),
+                                            SizedBox(width: 10),
+                                            Text('Leaderboard',
+                                                style: const TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                )),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+
+                                    //ROW 4
                                     Padding(
-                                      padding: const EdgeInsets.all(20.0),
+                                      padding: const EdgeInsets.only(
+                                          top: 30.0, left: 20.0, bottom: 20.0),
                                       child: Row(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
@@ -427,7 +497,8 @@ class _ProfileViewState extends State<ProfileView> {
                                                           builder: (BuildContext
                                                               context) {
                                                             return AlertDialog(
-                                                              title: const Text('List of badges'),
+                                                              title: const Text(
+                                                                  'List of badges'),
                                                               content: Container(
                                                                   height: 400.0,
                                                                   width: 300.0,
@@ -470,7 +541,7 @@ class _ProfileViewState extends State<ProfileView> {
                                           ]),
                                     ),
 
-                                    //ROW 4
+                                    //ROW 5
                                     listProfile[index].badge.isNotEmpty
                                         ? GridView.builder(
                                             gridDelegate:
@@ -489,14 +560,23 @@ class _ProfileViewState extends State<ProfileView> {
                                                 onTap: () async {
                                                   await showDialog(
                                                       context: context,
-                                                      builder:(context) =>
+                                                      builder:
+                                                          (context) =>
                                                               AlertDialog(
-                                                                content: Container(
+                                                                content:
+                                                                    Container(
                                                                   child: Column(
-                                                                      mainAxisSize:MainAxisSize.min,
-                                                                      children: <Widget>[
-                                                                        Image.network(listProfile[index].badge[indexBadge].badge_img),
-                                                                        Text(listProfile[index].badge[indexBadge].badge_description),
+                                                                      mainAxisSize:
+                                                                          MainAxisSize
+                                                                              .min,
+                                                                      children: <
+                                                                          Widget>[
+                                                                        Image.network(listProfile[index]
+                                                                            .badge[indexBadge]
+                                                                            .badge_img),
+                                                                        Text(listProfile[index]
+                                                                            .badge[indexBadge]
+                                                                            .badge_description),
                                                                       ]),
                                                                 ),
                                                               ));
@@ -507,7 +587,10 @@ class _ProfileViewState extends State<ProfileView> {
                                                   decoration: BoxDecoration(
                                                     image: DecorationImage(
                                                         image: NetworkImage(
-                                                            listProfile[index].badge[indexBadge].badge_img)),
+                                                            listProfile[index]
+                                                                .badge[
+                                                                    indexBadge]
+                                                                .badge_img)),
                                                   ),
                                                 ),
                                               );
@@ -516,7 +599,8 @@ class _ProfileViewState extends State<ProfileView> {
                                   ]);
                                 });
                           } else {
-                            return const Center(child: CircularProgressIndicator());
+                            return const Center(
+                                child: CircularProgressIndicator());
                           }
                         })))));
   }
