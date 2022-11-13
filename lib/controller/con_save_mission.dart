@@ -8,8 +8,9 @@ import 'package:rflutter_alert/rflutter_alert.dart';
 saveMission(
     {required BuildContext context,
     required String eventID,
-    required String userID}) async {
-  var data = {'event_id': eventID, 'user_id': userID};
+    required String userID,
+    required int participantNo}) async {
+  var data = {'event_id': eventID, 'user_id': userID, 'participant_no': participantNo};
   
   var req = await Dio()
       .post(ApiConstant().baseUrl + ApiConstant().joinMission, data: data);

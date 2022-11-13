@@ -24,6 +24,7 @@ Event _$EventFromJson(Map<String, dynamic> json) => Event(
       imageUrl: json['imageUrl'] as String,
       limitRegistration: json['limitRegistration'] as int,
       currentParticipants: json['currentParticipants'] as int,
+      participantNo: json['participantNo'] as int,
     );
 
 Map<String, dynamic> _$EventToJson(Event instance) => <String, dynamic>{
@@ -32,6 +33,7 @@ Map<String, dynamic> _$EventToJson(Event instance) => <String, dynamic>{
       'points': instance.points,
       'limitRegistration': instance.limitRegistration,
       'currentParticipants': instance.currentParticipants,
+      'participantNo': instance.participantNo,
       'name': instance.name,
       'description': instance.description,
       'venue': instance.venue,

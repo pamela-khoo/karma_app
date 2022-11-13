@@ -5,21 +5,21 @@ $data = file_get_contents('php://input');
 $dataDecode = json_decode($data, true);
 
 // $user_id = 4; 
-$user_id = $dataDecode['user_id'];; //TODO: get id....
+$user_id = $dataDecode['user_id'];
 
 //sum total score and store in user table 
-// $query = "SELECT u.id as user_id, SUM(e.points) as total
-//             FROM mission m 
-//             JOIN events e ON m.event_id = e.id 
-//             JOIN user u ON m.user_id = u.id
-//             WHERE m.status = '1' 
-//             GROUP BY m.user_id "; 
-// $sql = mysqli_query($conn, $query); 
+$query = "SELECT u.id as user_id, SUM(e.points) as total
+            FROM mission m 
+            JOIN events e ON m.event_id = e.id 
+            JOIN user u ON m.user_id = u.id
+            WHERE m.status = '1' 
+            GROUP BY m.user_id "; 
+$sql = mysqli_query($conn, $query); 
 
-// while ($total = mysqli_fetch_assoc($sql)) { 
-//    $query = "UPDATE user SET points = '".$total['total']."' WHERE id = '".$total['user_id']."' "; 
-//    $pointsUpdate = mysqli_query($conn, $query); 
-// }
+while ($total = mysqli_fetch_assoc($sql)) { 
+   $query = "UPDATE user SET points = '".$total['total']."' WHERE id = '".$total['user_id']."' "; 
+   $pointsUpdate = mysqli_query($conn, $query); 
+}
 
 //get current score 
 $query = mysqli_query($conn, "SELECT * FROM user WHERE id = '".$user_id. "' ");

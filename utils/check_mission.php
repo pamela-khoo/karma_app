@@ -7,6 +7,7 @@
 
 	$eventID = $dataDecode['event_id'];
 	$userID = $dataDecode['user_id'];
+	$participantNo = $dataDecode['participant_no'];
 
 	$query = "SELECT * FROM mission WHERE event_id = '".$eventID."' AND user_id = '".$userID."'";
 	

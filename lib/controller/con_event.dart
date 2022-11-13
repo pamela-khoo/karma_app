@@ -29,6 +29,7 @@ Future<List<Event>> fetchEvent(List<Event> fetch) async {
         points: events['points'],
         imageUrl: events['image_url'],
         limitRegistration: events['limit_registration'],
+        participantNo: events['participant_no'],
         currentParticipants: events['current_participants']
         ));
   }

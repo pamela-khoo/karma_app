@@ -26,7 +26,10 @@ class UpcomingDetailView extends StatefulWidget {
 class _UpcomingDetailViewState extends State<UpcomingDetailView> {
   Future<List<Event>>? getDetail;
   List<Event> listDetail = [];
+  
   String id = '', name = '', email = '', checkMission = "0";
+  final int _itemCount = 1;
+
   late SharedPreferences preferences;
 
   @override
@@ -60,7 +63,7 @@ class _UpcomingDetailViewState extends State<UpcomingDetailView> {
             onTap: () => Navigator.of(context).pop(false),
             child: Icon(Icons.arrow_back)),
       ),
- body: FutureBuilder(
+      body: FutureBuilder(
         future: getDetail,
         builder: (BuildContext context, AsyncSnapshot<List<Event>> snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
@@ -118,9 +121,7 @@ class _UpcomingDetailViewState extends State<UpcomingDetailView> {
                                       ]),
                                 ],
                               ),
-                              onTap: () => launch(listDetail[index].orgUrl)
-                            ),
-
+                              onTap: () => launch(listDetail[index].orgUrl)),
                           Padding(
                             padding: EdgeInsets.all(16.0),
                             child: Image.network(listDetail[index].imageUrl),
@@ -134,14 +135,14 @@ class _UpcomingDetailViewState extends State<UpcomingDetailView> {
                                   color: Colors.blue[300],
                                 ),
                                 const SizedBox(width: 10),
-
-                                listDetail[index].startDate == listDetail[index].endDate
-                                          ? Text(
-                                              listDetail[index].startDate,
-                                            )
-                                          : Text(
-                                              '${listDetail[index].startDate} to ${listDetail[index].endDate}',
-                                            )
+                                listDetail[index].startDate ==
+                                        listDetail[index].endDate
+                                    ? Text(
+                                        listDetail[index].startDate,
+                                      )
+                                    : Text(
+                                        '${listDetail[index].startDate} to ${listDetail[index].endDate}',
+                                      )
                               ],
                             ),
                           ),
@@ -164,32 +165,35 @@ class _UpcomingDetailViewState extends State<UpcomingDetailView> {
                           Padding(
                             padding: EdgeInsets.only(top: 20.0, left: 20.0),
                             child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                   Icon(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Icon(
                                   Icons.location_on,
                                   color: Colors.deepOrange[300],
                                 ),
                                 SizedBox(width: 10),
-                                  Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        Text(
-                                          listDetail[index].venue,
-                                        ),
-                                        ElevatedButton(
-                                           style: TextButton.styleFrom(
+                                Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      Text(
+                                        listDetail[index].venue,
+                                      ),
+                                      ElevatedButton(
+                                          style: TextButton.styleFrom(
                                             primary: Colors.blue,
-      backgroundColor: Colors.white, // Background Color
-),
-                                          child: const Text('View on Google Maps'),
-                                         onPressed: () => launch(ApiConstant().mapSearch+listDetail[index].organization)
-                                        ),
-                                      ]),
-                                ],
-                              ),
+                                            backgroundColor: Colors
+                                                .white, // Background Color
+                                          ),
+                                          child:
+                                              const Text('View on Google Maps'),
+                                          onPressed: () => launch(ApiConstant()
+                                                  .mapSearch +
+                                              listDetail[index].organization)),
+                                    ]),
+                              ],
+                            ),
                           ),
                           Padding(
                             padding: EdgeInsets.only(top: 20.0, left: 20.0),
@@ -207,6 +211,19 @@ class _UpcomingDetailViewState extends State<UpcomingDetailView> {
                             ),
                           ),
                           Padding(
+                            padding: const EdgeInsets.only(top: 20.0, left: 20.0),
+                            child: Row(
+                              children: <Widget>[
+                                Icon(
+                                  Icons.people_outline_rounded,
+                                  color: Colors.indigo[300],
+                                ),
+                                SizedBox(width: 10),
+                                Text('${listDetail[index].participantNo} volunteer(s)')
+                              ]
+                            )
+                          ),
+                          Padding(
                             padding: EdgeInsets.all(20.0),
                             child: Row(
                               children: <Widget>[
@@ -222,14 +239,16 @@ class _UpcomingDetailViewState extends State<UpcomingDetailView> {
                             ),
                           ),
                           Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: <Widget>[
-
-                          QrImage(
-                            data: (ApiConstant().webUrl+ApiConstant().webApi+ApiConstant().webMission+listDetail[index].id.toString()), 
-                            size: 200),
-                                ]),
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                QrImage(
+                                    data: (ApiConstant().webUrl +
+                                        ApiConstant().webApi +
+                                        ApiConstant().webMission +
+                                        listDetail[index].id.toString()),
+                                    size: 200),
+                              ]),
                           Center(
                               child: Padding(
                             padding: const EdgeInsets.only(bottom: 20.0),
@@ -258,7 +277,8 @@ class _UpcomingDetailViewState extends State<UpcomingDetailView> {
                                                 context: myMission,
                                                 eventID:
                                                     widget.eventID.toString(),
-                                                userID: id),
+                                                userID: id,
+                                                participantNo: _itemCount),
                                           ),
                                         ).then((value) async {
                                           preferences = await SharedPreferences

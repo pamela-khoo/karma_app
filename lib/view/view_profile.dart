@@ -55,10 +55,10 @@ class _ProfileViewState extends State<ProfileView> {
         name = value[1];
         email = value[2];
         getProfile = fetchProfile(listProfile, id);
+        saveBadges(userID: id);
       });
     });
     _totalNotifications = 0;
-    saveBadges(userID: id);
   }
 
   void registerNotification() async {
@@ -117,6 +117,16 @@ class _ProfileViewState extends State<ProfileView> {
     }
   }
 
+  //Pull to refresh: get updated points and badges
+  Future refresh() async {
+    setState(() => listProfile.clear());
+    setState(() {
+      saveBadges(userID: id);
+      getProfile = fetchProfile(listProfile, id);
+    });
+  }
+
+  //Logout of app
   logout() {
     return Container(
       height: 200.0,
@@ -192,7 +202,8 @@ class _ProfileViewState extends State<ProfileView> {
               child: Icon(Icons.logout_rounded),
               backgroundColor: Colors.teal,
             ),
-            body: SafeArea(
+            body: RefreshIndicator(
+                onRefresh: refresh,
                 child: Container(
                     child: FutureBuilder(
                         future: getProfile,
@@ -382,10 +393,26 @@ class _ProfileViewState extends State<ProfileView> {
                                                         animation: true,
                                                         lineHeight: 30.0,
                                                         animationDuration: 2000,
+
+                                                        //TODO: Show Reward clickable popup
+                                                        // onAnimationEnd: () {
+                                                        //   GestureDetector(
+                                                        //       onTap: () async {
+                                                        //         await showDialog(
+                                                        //             context:
+                                                        //                 context,
+                                                        //             builder: (context) =>
+                                                        //                 AlertDialog(
+                                                        //                     title:
+                                                        //                         Text('Hello')));
+                                                        //       },
+                                                        //       child: Container(
+                                                        //           child: Text(
+                                                        //               'Click')));
+                                                        // },
+
                                                         percent:
-                                                            (listProfile[index]
-                                                                    .points /
-                                                                1000),
+                                                        (listProfile[index].points / 1000),
                                                         barRadius: const Radius
                                                             .circular(16),
                                                         linearGradient:
@@ -498,25 +525,30 @@ class _ProfileViewState extends State<ProfileView> {
                                                               context) {
                                                             return AlertDialog(
                                                               title: const Text(
-                                                                  'List of badges'),
+                                                                  'List of all badges'),
                                                               content: Container(
                                                                   height: 400.0,
                                                                   width: 300.0,
                                                                   child: GridView.builder(
-                                                                      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(maxCrossAxisExtent: 200, childAspectRatio: 3 / 2, crossAxisSpacing: 10, mainAxisSpacing: 20),
+                                                                      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(maxCrossAxisExtent: 200, childAspectRatio: 3 / 4, crossAxisSpacing: 10, mainAxisSpacing: 20),
                                                                       scrollDirection: Axis.vertical,
                                                                       shrinkWrap: true,
                                                                       itemCount: listProfile[index].badgeAll.length,
                                                                       itemBuilder: (BuildContext context, int indexBadge) {
-                                                                        //TODO: Show all badges UI
-                                                                        return Row(
+                                                                        return SingleChildScrollView(
+                                                                            child:
+                                                                                Column(
                                                                           children: <
                                                                               Widget>[
                                                                             Image.network(listProfile[index].badgeAll[indexBadge].badge_img),
-                                                                            Text(listProfile[index].badgeAll[indexBadge].badge_name),
-                                                                            //Text(listProfile[index].badgeAll[indexBadge].badge_description)
+                                                                            Text(listProfile[index].badgeAll[indexBadge].badge_name,
+                                                                                style: TextStyle(fontWeight: FontWeight.bold)),
+                                                                            Padding(
+                                                                              padding: EdgeInsets.only(top: 25),
+                                                                              child: Text(listProfile[index].badgeAll[indexBadge].badge_description, textAlign: TextAlign.center, style: TextStyle(fontStyle: FontStyle.italic)),
+                                                                            )
                                                                           ],
-                                                                        );
+                                                                        ));
                                                                       })),
                                                             );
                                                           });
@@ -560,26 +592,26 @@ class _ProfileViewState extends State<ProfileView> {
                                                 onTap: () async {
                                                   await showDialog(
                                                       context: context,
-                                                      builder:
-                                                          (context) =>
-                                                              AlertDialog(
-                                                                content:
-                                                                    Container(
-                                                                  child: Column(
-                                                                      mainAxisSize:
-                                                                          MainAxisSize
-                                                                              .min,
-                                                                      children: <
-                                                                          Widget>[
-                                                                        Image.network(listProfile[index]
-                                                                            .badge[indexBadge]
-                                                                            .badge_img),
-                                                                        Text(listProfile[index]
-                                                                            .badge[indexBadge]
-                                                                            .badge_description),
-                                                                      ]),
-                                                                ),
-                                                              ));
+                                                      builder: (context) =>
+                                                          AlertDialog(
+                                                            content: Column(
+                                                                mainAxisSize:
+                                                                    MainAxisSize
+                                                                        .min,
+                                                                children: <
+                                                                    Widget>[
+                                                                  Image.network(listProfile[
+                                                                          index]
+                                                                      .badge[
+                                                                          indexBadge]
+                                                                      .badge_img),
+                                                                  Text(listProfile[
+                                                                          index]
+                                                                      .badge[
+                                                                          indexBadge]
+                                                                      .badge_description),
+                                                                ]),
+                                                          ));
                                                 },
                                                 child: Container(
                                                   width: double.infinity,

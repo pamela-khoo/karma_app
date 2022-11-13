@@ -18,5 +18,6 @@ class ApiConstant {
   String profile = "profile=";
   String badge = "badge";
   String leaderboard = "leaderboard";
+  String category = "category";
   String registrationLimit = "registration_limit";
 }

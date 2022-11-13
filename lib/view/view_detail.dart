@@ -13,6 +13,7 @@ import 'package:karma_app/model/model_event.dart';
 import 'package:karma_app/widget/shared_pref.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:customizable_counter/customizable_counter.dart';
 
 class DetailView extends StatefulWidget {
   int eventID;
@@ -27,7 +28,10 @@ class DetailView extends StatefulWidget {
 class _DetailViewState extends State<DetailView> {
   Future<List<Event>>? getDetail;
   List<Event> listDetail = [];
+
   String id = '', name = '', email = '', checkMission = "0";
+  double _itemCount = 0;
+
   late SharedPreferences preferences;
 
   @override
@@ -43,7 +47,7 @@ class _DetailViewState extends State<DetailView> {
   }
 
   checkMissions(String userID) async {
-    var data = {'event_id': widget.eventID, 'user_id': userID};
+    var data = {'event_id': widget.eventID, 'user_id': userID, 'participant_no': _itemCount.round()};
     var check = await Dio()
         .post(ApiConstant().baseUrl + ApiConstant().checkMission, data: data);
     var response = check.data;
@@ -122,11 +126,12 @@ class _DetailViewState extends State<DetailView> {
                               onTap: () => launch(listDetail[index].orgUrl)
                             ),
 
-                          Padding(
-                            padding: EdgeInsets.all(16.0),
-                            child: Image.network(listDetail[index].imageUrl),
-                          ),
-                          Padding(
+                            Padding(
+                              padding: EdgeInsets.all(16.0),
+                              child: Image.network(listDetail[index].imageUrl),
+                            ),
+
+                            Padding(
                             padding: EdgeInsets.only(top: 20.0, left: 20.0),
                             child: Row(
                               children: <Widget>[
@@ -151,8 +156,8 @@ class _DetailViewState extends State<DetailView> {
                             child: Row(
                               children: <Widget>[
                                 Icon(
-                                  Icons.access_time_filled_sharp,
-                                  color: Colors.indigo[300],
+                                  Icons.access_time,
+                                  color: Colors.pink[200],
                                 ),
                                 SizedBox(width: 10),
                                 Text(
@@ -180,11 +185,12 @@ class _DetailViewState extends State<DetailView> {
                                         Text(
                                           listDetail[index].venue,
                                         ),
-                                        ElevatedButton(
-                                           style: TextButton.styleFrom(
+                                      ElevatedButton(
+                                          style: TextButton.styleFrom(
                                             primary: Colors.blue,
-      backgroundColor: Colors.white, // Background Color
-),
+                                            backgroundColor: Colors
+                                                .white, // Background Color
+                                          ),
                                           child: const Text('View on Google Maps'),
                                          onPressed: () => launch(ApiConstant().mapSearch+listDetail[index].organization)
                                         ),
@@ -203,9 +209,44 @@ class _DetailViewState extends State<DetailView> {
                                 SizedBox(width: 10),
                                 Text(
                                   'Earn ${listDetail[index].points.toString()} Karma points',
-                                )
+                                ),
                               ],
                             ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 20.0, left: 20.0),
+                            child: Row(
+                              children: <Widget>[
+                                Icon(
+                                  Icons.people_outline_rounded,
+                                  color: Colors.indigo[300],
+                                ),
+                                SizedBox(width: 10),
+                                CustomizableCounter(
+                                  backgroundColor: Color.fromARGB(255, 240, 240, 240),
+                                  borderWidth: 0,
+                                  borderColor: Color.fromARGB(255, 240, 240, 240),
+                                  borderRadius: 100,
+                                  textColor: Colors.black,
+                                  textSize: 14,
+                                  buttonText: "Select number of volunteer(s)",
+                                  count: _itemCount,
+                                  step: 1,
+                                  minCount: 0,
+                                  maxCount: (listDetail[index].limitRegistration - listDetail[index].currentParticipants).toDouble(),
+                                  incrementIcon: const Icon(
+                                    Icons.add,
+                                    color: Colors.teal,
+                                  ),
+                                  decrementIcon: const Icon(
+                                    Icons.remove,
+                                    color: Colors.teal,
+                                  ),
+                                  onIncrement: (count) => setState(()=>_itemCount++),
+                                  onDecrement: (count) => setState(()=>_itemCount--)
+                                ),
+                              ]
+                            )
                           ),
                           Padding(
                             padding: EdgeInsets.all(20.0),
@@ -250,7 +291,8 @@ class _DetailViewState extends State<DetailView> {
                                                 context: myMission,
                                                 eventID:
                                                     widget.eventID.toString(),
-                                                userID: id),
+                                                userID: id,
+                                                participantNo: _itemCount.round()),
                                           ),
                                         ).then((value) async {
                                           preferences = await SharedPreferences

@@ -180,8 +180,8 @@ body: FutureBuilder(
                                         ElevatedButton(
                                            style: TextButton.styleFrom(
                                             primary: Colors.blue,
-      backgroundColor: Colors.white, // Background Color
-),
+                                                backgroundColor: Colors.white, // Background Color
+                                          ),
                                           child: const Text('View on Google Maps'),
                                          onPressed: () => launch(ApiConstant().mapSearch+listDetail[index].organization)
                                         ),
@@ -203,6 +203,19 @@ body: FutureBuilder(
                                 )
                               ],
                             ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 20.0, left: 20.0),
+                            child: Row(
+                              children: <Widget>[
+                                Icon(
+                                  Icons.people_outline_rounded,
+                                  color: Colors.indigo[300],
+                                ),
+                                SizedBox(width: 10),
+                                Text('${listDetail[index].participantNo} volunteer(s)')
+                              ]
+                            )
                           ),
                           Padding(
                             padding: EdgeInsets.all(20.0),

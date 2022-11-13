@@ -9,7 +9,7 @@ if (isset($_GET['events_all'])) {
     $sql = mysqli_query($conn, "SELECT * FROM events ");
 
     while ($data = mysqli_fetch_assoc($sql)) {
-        $query = "SELECT COUNT(id) as participants FROM mission WHERE event_id = '" .$data['id']. "' GROUP BY event_id";
+        $query = "SELECT SUM(participant_no) as participants FROM mission WHERE event_id = '" .$data['id']. "' GROUP BY event_id";
         $fetchCount = mysqli_query($conn, $query);
 
         $limit = $data['limit_registration'];
@@ -42,7 +42,7 @@ if (isset($_GET['events_all'])) {
     $sql = mysqli_query($conn, $query);
 
     while ($data = mysqli_fetch_assoc($sql)) {
-        $query = "SELECT COUNT(id) as participants FROM mission WHERE event_id = '" .$data['event_id']. "' GROUP BY event_id";
+        $query = "SELECT SUM(participant_no) as participants FROM mission WHERE event_id = '" .$data['event_id']. "' GROUP BY event_id";
         $fetchCount = mysqli_query($conn, $query);
 
         $currentParticipants = 0;
@@ -90,6 +90,77 @@ if (isset($_GET['events_all'])) {
     $sql = mysqli_query($conn, $query);
 
     while ($data = mysqli_fetch_assoc($sql)) {
+
+        $query = "SELECT SUM(participant_no) as participants, participant_no FROM mission WHERE event_id = '" .$data['event_id']. "' GROUP BY event_id";
+        $fetchCount = mysqli_query($conn, $query);
+
+        $currentParticipants = 0;
+
+        while ($count = mysqli_fetch_assoc($fetchCount)) {
+            $currentParticipants = $count['participants']; 
+            $participantNo = $count['participant_no'];
+        }
+        
+        $row['id'] = $data['event_id'];
+        $row['name'] = $data['name'];
+        $row['start_date'] = getDateString($data['start_date']);
+        $row['end_date'] = getDateString($data['end_date']);
+        $row['start_time'] = $data['start_time'];
+        $row['end_time'] = $data['end_time'];
+        $row['description'] = $data['description'];
+        $row['status'] = $data['status'];
+        $row['venue'] = $data['venue'];
+        $row['cat_name'] = $data['cat_name'];
+        $row['org_name'] = $data['org_name'];
+        $row['org_url'] = $data['org_url'];
+        $row['logo_url'] = $image_logo.$data['logo_url'];
+        $row['points'] = $data['points'];
+        $row['image_url'] = $image_path.$data['image_url'];
+        $row['limit_registration'] = $data['limit_registration'];
+        $row['participant_no'] = $participantNo;
+        $row['current_participants'] = $currentParticipants;
+
+        array_push($array, $row);
+    }
+
+    header( 'Content-Type: application/json; charset=utf-8' );
+    echo $val= str_replace('\\/', '/', json_encode($array,JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK));
+    die();
+    
+} else if (isset($_GET['category'])){
+      
+    $array = array();
+
+      $query = "SELECT * FROM category WHERE status = '1' ORDER BY id DESC";
+      $sql = mysqli_query($conn, $query);
+
+      while ($data = mysqli_fetch_assoc($sql)) {
+          
+          $row['id'] = $data['id'];
+          $row['name'] = $data['name'];
+          $row['status'] = $data['status'];
+
+          array_push($array, $row);
+      }
+
+      header( 'Content-Type: application/json; charset=utf-8' );
+      echo $val= str_replace('\\/', '/', json_encode($array,JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK));
+      die();
+
+} elseif (isset($_GET['event_by_cat'])) {
+		
+    $array = array();
+
+    $catID = $_GET['event_by_cat'];
+
+    $query = "SELECT e.id AS event_id,e.name,e.start_date,e.end_date,e.start_time,e.end_time,e.description,e.status,e.venue,
+                e.category,c.id,c.name AS cat_name,e.organization,o.id,o.org_name,o.logo_url,o.org_url,e.points,e.image_url,e.limit_registration
+                FROM events e JOIN category c ON e.category = c.id JOIN organization o ON e.organization = o.id 
+                WHERE e.status = '1' AND e.start_date >= CURDATE() AND c.id = '$catID' GROUP BY event_id, c.id ORDER BY e.start_date";
+
+    $sql = mysqli_query($conn, $query);
+
+    while ($data = mysqli_fetch_assoc($sql)) {
         
         $row['id'] = $data['event_id'];
         $row['name'] = $data['name'];
@@ -114,7 +185,7 @@ if (isset($_GET['events_all'])) {
     header( 'Content-Type: application/json; charset=utf-8' );
     echo $val= str_replace('\\/', '/', json_encode($array,JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK));
     die();
-    
+
 } elseif (isset($_GET['mission'])) {
 
     $userID = $_GET['mission'];
@@ -165,7 +236,7 @@ if (isset($_GET['events_all'])) {
                 e.category,c.id,c.name AS cat_name,e.organization,o.id,o.org_name,o.logo_url,o.org_url,e.points,e.image_url,e.limit_registration
                 FROM events e JOIN category c ON e.category = c.id JOIN organization o ON e.organization = o.id
                 JOIN mission m ON e.id = m.event_id JOIN user u ON m.user_id = u.id
-                WHERE m.user_id = '".$userID."' AND m.status = '0' ORDER BY m.id DESC";
+                WHERE m.user_id = '".$userID."' AND m.status = '0' AND e.start_date > CURDATE() ORDER BY e.start_date";
 
     $sql = mysqli_query($conn, $query);
 
@@ -205,7 +276,7 @@ if (isset($_GET['events_all'])) {
                     e.category,c.id,c.name AS cat_name,e.organization,o.id,o.org_name,o.logo_url,o.org_url,e.points,e.image_url,e.limit_registration
                     FROM events e JOIN category c ON e.category = c.id JOIN organization o ON e.organization = o.id
                     JOIN mission m ON e.id = m.event_id JOIN user u ON m.user_id = u.id
-                    WHERE m.user_id = '".$userID."' AND m.status = '1' ORDER BY m.id DESC";
+                    WHERE m.user_id = '".$userID."' AND m.status = '1' ORDER BY e.start_date DESC";
     
         $sql = mysqli_query($conn, $query);
     
