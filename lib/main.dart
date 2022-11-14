@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_session/flutter_session.dart';
 import 'package:http/http.dart' as http;
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:karma_app/services/notification_service.dart';
 import 'package:karma_app/view/login.dart';
 import 'package:karma_app/view/register.dart';
 import 'package:karma_app/view/view_home.dart';
@@ -16,7 +17,7 @@ void main() async {
 }
 
 class KarmaApp extends StatelessWidget {
-   const KarmaApp({Key? key}) : super(key: key);
+  const KarmaApp({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -28,4 +29,3 @@ class KarmaApp extends StatelessWidget {
     );
   }
 }
-

@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:karma_app/controller/con_badge.dart';
 import 'package:karma_app/controller/con_profile.dart';
 import 'package:karma_app/model/model_profile.dart';
+import 'package:karma_app/services/notification_service.dart';
 import 'package:karma_app/view/bottom_view.dart';
 import 'package:karma_app/view/custom_error.dart';
 import 'package:karma_app/view/login.dart';
@@ -17,6 +18,7 @@ import 'package:karma_app/widget/shared_pref.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:karma_app/services/notification_service.dart';
 
 class PushNotification {
   PushNotification({
@@ -43,6 +45,7 @@ class _ProfileViewState extends State<ProfileView> {
 
   late int _totalNotifications;
   late final FirebaseMessaging _messaging;
+  late final LocalNotificationService service;
   PushNotification? _notificationInfo;
 
   @override
@@ -55,19 +58,27 @@ class _ProfileViewState extends State<ProfileView> {
         name = value[1];
         email = value[2];
         getProfile = fetchProfile(listProfile, id);
+        service = LocalNotificationService();
         saveBadges(userID: id);
       });
     });
     _totalNotifications = 0;
+    registerNotification();
   }
 
   void registerNotification() async {
     //...
 
     await Firebase.initializeApp();
-
+    FirebaseMessaging.instance.getToken().then((newToken) {
+      print("FCM TOKEN");
+      print(newToken);
+    });
     // 2. Instantiate Firebase Messaging
     _messaging = FirebaseMessaging.instance;
+    // final String? token = await FirebaseMessaging.instance.getToken();
+    // if (token == null) return;
+
     NotificationSettings settings = await _messaging.requestPermission(
       alert: true,
       badge: true,
@@ -78,9 +89,16 @@ class _ProfileViewState extends State<ProfileView> {
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
       print('User granted permission');
 
+      FirebaseMessaging.onBackgroundMessage(_onBackGroundMessage);
+
+      await FirebaseMessaging.instance
+          .setForegroundNotificationPresentationOptions(
+              alert: true, badge: false, sound: true);
+
       // For handling the received notifications
       FirebaseMessaging.onMessage.listen((RemoteMessage message) {
         // Parse the message received
+        print(message.notification?.title);
         PushNotification notification = PushNotification(
           title: message.notification?.title,
           body: message.notification?.body,
@@ -221,15 +239,20 @@ class _ProfileViewState extends State<ProfileView> {
                                 itemBuilder: (context, index) {
                                   return Column(children: [
                                     // Notification test
-                                    NotificationBadge(
-                                        totalNotifications:
-                                            _totalNotifications),
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        registerNotification();
-                                      },
-                                      child: Text('Test'),
-                                    ),
+                                    // NotificationBadge(
+                                    //     totalNotifications:
+                                    //         _totalNotifications),
+                                    // ElevatedButton(
+                                    //   onPressed: () {
+                                    //     registerNotification();
+                                    //     // sendNotification();
+                                    //     // await service.showNotification(
+                                    //     //     id: 0,
+                                    //     //     title: 'test',
+                                    //     //     body: 'testbody');
+                                    //   },
+                                    //   child: Text('Test'),
+                                    // ),
 
                                     //ROW 1
                                     Padding(
@@ -412,7 +435,9 @@ class _ProfileViewState extends State<ProfileView> {
                                                         // },
 
                                                         percent:
-                                                        (listProfile[index].points / 1000),
+                                                            (listProfile[index]
+                                                                    .points /
+                                                                1000),
                                                         barRadius: const Radius
                                                             .circular(16),
                                                         linearGradient:
@@ -636,4 +661,11 @@ class _ProfileViewState extends State<ProfileView> {
                           }
                         })))));
   }
+
+  static Future<void> _onBackGroundMessage(RemoteMessage message) async {
+    print('received notification ${message.notification}');
+  }
+
+  // static Future<bool> sendNotification() async {
+  // }
 }
