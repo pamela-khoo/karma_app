@@ -48,12 +48,12 @@ class _BottomViewState extends State<BottomView> {
               )),
           BottomNavigationBarItem(
               icon: Icon(
-                Icons.account_circle_outlined,
+                Icons.emoji_events_outlined,
                 color: Colors.teal[300],
               ),
-              label: 'Profile',
+              label: 'Achievements',
               activeIcon: const Icon(
-                Icons.account_circle,
+                Icons.emoji_events,
                 color: Colors.teal,
               ))
         ],

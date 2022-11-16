@@ -57,7 +57,7 @@ class _HomeViewState extends State<HomeView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Dashboard'),
+        title: const Text('Home'),
         automaticallyImplyLeading: false,
         leading: IconButton(
           icon: const Icon(Icons.handshake_outlined, color: Colors.white),

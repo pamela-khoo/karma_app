@@ -291,11 +291,11 @@ class _UpcomingDetailViewState extends State<UpcomingDetailView> {
                                         });
                                       },
                                       child: checkMission == "already"
-                                          ? Text(
-                                              'Already Joined Event',
+                                          ? const Text(
+                                              'Cancel Registration',
                                               style: TextStyle(fontSize: 14),
                                             )
-                                          : Text(
+                                          : const Text(
                                               'Join Event',
                                               style: TextStyle(fontSize: 14),
                                             )),
