@@ -183,7 +183,7 @@ body: FutureBuilder(
                                                 backgroundColor: Colors.white, // Background Color
                                           ),
                                           child: const Text('View on Google Maps'),
-                                         onPressed: () => launch(ApiConstant().mapSearch+listDetail[index].organization)
+                                         onPressed: () => launch(ApiConstant().mapSearch+listDetail[index].venue)
                                         ),
                                       ]),
                                 ],

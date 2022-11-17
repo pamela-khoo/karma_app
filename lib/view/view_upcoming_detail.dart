@@ -190,7 +190,7 @@ class _UpcomingDetailViewState extends State<UpcomingDetailView> {
                                               const Text('View on Google Maps'),
                                           onPressed: () => launch(ApiConstant()
                                                   .mapSearch +
-                                              listDetail[index].organization)),
+                                              listDetail[index].venue)),
                                     ]),
                               ],
                             ),

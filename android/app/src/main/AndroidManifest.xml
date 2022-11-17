@@ -2,10 +2,10 @@
     package="com.karma_app">
     <uses-permission android:name="android.permission.INTERNET" />
    <application
-        android:label="karma_app"
+        android:label="Karma"
         android:usesCleartextTraffic="true"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/launcher_icon">
         <activity
             android:name=".MainActivity"
             android:exported="true"
