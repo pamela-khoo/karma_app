@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_session/flutter_session.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -23,6 +25,44 @@ class _LoginState extends State<Login> {
   TextEditingController user = TextEditingController();
   TextEditingController pass = TextEditingController();
 
+  // Future<bool> callOnFcmApiSendPushNotifications(
+  //     {required String title, required String body}) async {
+  //   const postUrl = 'https://fcm.googleapis.com/fcm/send';
+  //   final data = {
+  //     "to": "/topics/myTopic",
+  //     "notification": {
+  //       "title": title,
+  //       "body": body,
+  //     },
+  //     "data": {
+  //       "type": '0rder',
+  //       "id": '28',
+  //       "click_action": 'FLUTTER_NOTIFICATION_CLICK',
+  //     }
+  //   };
+
+  //   final headers = {
+  //     'content-type': 'application/json',
+  //     'Authorization':
+  //         'key=AAAAaRuW8P4:APA91bGCEtvIPLVwV8G0EZAIsJU6V5g3F5EPdcAFpe8pRKuz3fr7DmbOUeQ6bSg7G9A_0D1fCIywXBGsDQ_P5FAnbmutAOJ-BTWKeOzigyVhmqwo1aFigc1d2Y113d_eiui9Q0Yx7kiv' // 'key=YOUR_SERVER_KEY'
+  //   };
+
+  //   final response = await http.post(Uri.parse(postUrl),
+  //       body: json.encode(data),
+  //       encoding: Encoding.getByName('utf-8'),
+  //       headers: headers);
+
+  //   if (response.statusCode == 200) {
+  //     // on success do sth
+  //     print('test ok push CFM');
+  //     return true;
+  //   } else {
+  //     print(response.body);
+  //     // on failure do sth
+  //     return false;
+  //   }
+  // }
+
   Future login() async {
     var url = ApiConstant().baseUrl + ApiConstant().login;
     var response = await http.post(url, body: {
@@ -30,10 +70,42 @@ class _LoginState extends State<Login> {
       "password": pass.text,
     });
 
+    // final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+    // String? token = await _firebaseMessaging.getToken();
+    // print(token);
+
     var data = jsonDecode(response.body);
 
     if (data[3].toString() == "Success") {
       await FlutterSession().set('token', user.text);
+      // callOnFcmApiSendPushNotifications(
+      //     title: 'fcm by api2', body: 'its working fine2');
+
+      // var url2 = ApiConstant().baseUrl + ApiConstant().event_day;
+      // print(url);
+      // print(url2);
+      // var eventDayResponse = await http.post(url2, body: {
+      //   "user_id": data[0],
+      // });
+
+      // var eventDayData = jsonDecode(eventDayResponse.body);
+
+      // int daysBetween(DateTime from, DateTime to) {
+      //   from = DateTime(from.year, from.month, from.day);
+      //   to = DateTime(to.year, to.month, to.day);
+      //   return (to.difference(from).inHours / 24).round();
+      // }
+
+      // Get todays date
+      // DateTime now = DateTime.now();
+      // DateTime date = DateTime(now.year, now.month, now.day);
+
+      // for (var start_date in eventDayData) {
+      //   if (daysBetween(date, DateTime.parse(start_date)) == 1) {
+      //     print("Different is 1 day");
+      //     FirebaseMessaging.instance.subscribeToTopic("connectTopic");
+      //   }
+      // }
 
       Fluttertoast.showToast(
         msg: 'Login Successful',
@@ -86,10 +158,10 @@ class _LoginState extends State<Login> {
                   height: 150.0,
                   width: 150.0,
                   decoration: const BoxDecoration(
-                      image: DecorationImage(
-                          image: AssetImage('assets/karma_logo_2.png'),
-                          fit: BoxFit.scaleDown),
-                      ),
+                    image: DecorationImage(
+                        image: AssetImage('assets/karma_logo_2.png'),
+                        fit: BoxFit.scaleDown),
+                  ),
                 ),
                 Align(
                   alignment: Alignment.topLeft,
@@ -105,11 +177,11 @@ class _LoginState extends State<Login> {
                           Text(
                             ' Login',
                             style: TextStyle(
-                                fontSize: 30,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
-                                fontFamily: 'Aleo',
-                                ),
+                              fontSize: 30,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                              fontFamily: 'Aleo',
+                            ),
                           ),
                         ],
                       ),
@@ -136,14 +208,14 @@ class _LoginState extends State<Login> {
                           size: 22,
                         ),
                         border: InputBorder.none,
-                        hintText: 'Enter Username',
+                        hintText: 'Enter Email',
                         hintStyle: const TextStyle(
                             color: Colors.black54, fontSize: 14.5),
                         enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(100).copyWith(
                                 bottomRight: const Radius.circular(0)),
-                            borderSide:
-                                const BorderSide(color:Color.fromARGB(255, 238, 240, 241))),
+                            borderSide: const BorderSide(
+                                color: Color.fromARGB(255, 238, 240, 241))),
                         focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(100).copyWith(
                                 bottomRight: const Radius.circular(0)),
@@ -162,7 +234,7 @@ class _LoginState extends State<Login> {
                     style: const TextStyle(color: Colors.black, fontSize: 14.5),
                     obscureText: isPasswordVisible ? false : true,
                     decoration: InputDecoration(
-                      filled: true,
+                        filled: true,
                         fillColor: Color.fromARGB(255, 238, 240, 241),
                         prefixIconConstraints:
                             const BoxConstraints(minWidth: 45),
@@ -189,13 +261,13 @@ class _LoginState extends State<Login> {
                         ),
                         border: InputBorder.none,
                         hintText: 'Enter Password',
-                       hintStyle: const TextStyle(
+                        hintStyle: const TextStyle(
                             color: Colors.black54, fontSize: 14.5),
                         enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(100).copyWith(
                                 bottomRight: const Radius.circular(0)),
-                            borderSide:
-                                const BorderSide(color:Color.fromARGB(255, 238, 240, 241))),
+                            borderSide: const BorderSide(
+                                color: Color.fromARGB(255, 238, 240, 241))),
                         focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(100).copyWith(
                                 bottomRight: const Radius.circular(0)),
@@ -236,7 +308,8 @@ class _LoginState extends State<Login> {
                   height: 50,
                 ),
                 const Text('Don\'t have an account?',
-                    style: TextStyle(color: Color.fromARGB(255, 77, 77, 77), fontSize: 13)),
+                    style: TextStyle(
+                        color: Color.fromARGB(255, 77, 77, 77), fontSize: 13)),
                 const SizedBox(
                   height: 20,
                 ),
@@ -244,7 +317,7 @@ class _LoginState extends State<Login> {
                   onTap: () {
                     pushAndRemove(context, Register());
                   },
-                 child: Container(
+                  child: Container(
                     height: 53,
                     width: double.infinity,
                     margin: const EdgeInsets.symmetric(horizontal: 30),

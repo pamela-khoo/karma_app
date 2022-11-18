@@ -8,7 +8,7 @@ session_start();
  $email = $_POST['email'];
  $password = $_POST['password'];
 
- $sql = "SELECT * FROM user WHERE email = '".$email."' AND password = '".$password."'";
+ $sql = "SELECT * FROM user WHERE email = '".$email."' AND password = SHA1('".$password."')";
  $result = mysqli_query($db,$sql);
  $count = mysqli_num_rows($result);
  

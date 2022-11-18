@@ -236,7 +236,7 @@ if (isset($_GET['events_all'])) {
                 e.category,c.id,c.name AS cat_name,e.organization,o.id,o.org_name,o.logo_url,o.org_url,e.points,e.image_url,e.limit_registration
                 FROM events e JOIN category c ON e.category = c.id JOIN organization o ON e.organization = o.id
                 JOIN mission m ON e.id = m.event_id JOIN user u ON m.user_id = u.id
-                WHERE m.user_id = '".$userID."' AND m.status = '0' AND e.start_date > CURDATE() ORDER BY e.start_date";
+                WHERE m.user_id = '".$userID."' AND m.status = '0' AND e.start_date >= CURDATE() ORDER BY e.start_date";
 
     $sql = mysqli_query($conn, $query);
 

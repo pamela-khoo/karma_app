@@ -251,6 +251,7 @@ class _DetailViewState extends State<DetailView> {
                           Padding(
                             padding: EdgeInsets.all(20.0),
                             child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 Icon(
                                   Icons.assignment,

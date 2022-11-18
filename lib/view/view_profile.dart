@@ -4,6 +4,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:karma_app/controller/con_badge.dart';
 import 'package:karma_app/controller/con_profile.dart';
 import 'package:karma_app/model/model_profile.dart';
@@ -19,6 +21,7 @@ import 'package:overlay_support/overlay_support.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:karma_app/services/notification_service.dart';
+import 'package:external_app_launcher/external_app_launcher.dart';
 
 class PushNotification {
   PushNotification({
@@ -63,7 +66,7 @@ class _ProfileViewState extends State<ProfileView> {
       });
     });
     _totalNotifications = 0;
-    registerNotification();
+    //registerNotification();
   }
 
   void registerNotification() async {
@@ -103,6 +106,14 @@ class _ProfileViewState extends State<ProfileView> {
           title: message.notification?.title,
           body: message.notification?.body,
         );
+
+        FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+          print(message.notification?.body);
+          PushNotification notification = PushNotification(
+            title: message.notification?.title,
+            body: message.notification?.body,
+          );
+        });
 
         setState(() {
           _notificationInfo = notification;
@@ -183,12 +194,75 @@ class _ProfileViewState extends State<ProfileView> {
     );
   }
 
+  //Redeem reward code
+  redeem() {
+    return Container(
+      height: 150.0,
+      width: 200.0,
+      child: Column(
+        children: [
+          Container(
+            margin: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(3.0),
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.blueAccent),
+              borderRadius: BorderRadius.all(Radius.circular(16.0)),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text("TNGJG7N1", //TODO: get from db
+                      style: TextStyle(color: Colors.grey[700])),
+                ),
+                TextButton(
+                    style: TextButton.styleFrom(
+                      backgroundColor: Colors.grey[500],
+                      shape: const RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(16.0))),
+                    ),
+                    child: const Icon(
+                      Icons.copy_outlined,
+                      color: Colors.white,
+                    ),
+                    onPressed: () async {
+                      await Clipboard.setData(ClipboardData(text: "TNGJG7N1")) //TODO: get from db
+                          .then((_) {
+                        Fluttertoast.showToast(
+                          backgroundColor: Colors.grey[800],
+                          textColor: Colors.white,
+                          msg: 'Text copied to clipboard',
+                        );
+                        // copied successfully
+                      });
+                    }),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top:15.0),
+            child: ElevatedButton(
+              child: Text("Open in app"),
+              onPressed: () async {
+                await LaunchApp.openApp(
+                  androidPackageName: 'my.com.tngdigital.ewallet',
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return OverlaySupport(
         child: Scaffold(
             appBar: AppBar(
-              title: const Text('Profile'),
+              title: const Text('Achievements'),
               automaticallyImplyLeading: false,
               leading: IconButton(
                 icon: const Icon(Icons.handshake_outlined, color: Colors.white),
@@ -249,7 +323,7 @@ class _ProfileViewState extends State<ProfileView> {
                                     //     // await service.showNotification(
                                     //     //     id: 0,
                                     //     //     title: 'test',
-                                    //     //     body: 'testbody');
+                                    //     //     body: 'testbodyv');
                                     //   },
                                     //   child: Text('Test'),
                                     // ),
@@ -357,7 +431,7 @@ class _ProfileViewState extends State<ProfileView> {
                                                         ),
                                                       ),
                                                       Text(
-                                                        '${listProfile[index].points}',
+                                                        '${listProfile[index].points}'!='null' ? '${listProfile[index].points}':'0',
                                                         textAlign:
                                                             TextAlign.center,
                                                         style: const TextStyle(
@@ -408,36 +482,13 @@ class _ProfileViewState extends State<ProfileView> {
                                                           5, 15, 5, 15),
                                                       child:
                                                           LinearPercentIndicator(
-                                                        width: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .width -
-                                                            50,
+                                                        width: MediaQuery.of(context).size.width - 50,
                                                         animation: true,
                                                         lineHeight: 30.0,
-                                                        animationDuration: 2000,
-
-                                                        //TODO: Show Reward clickable popup
-                                                        // onAnimationEnd: () {
-                                                        //   GestureDetector(
-                                                        //       onTap: () async {
-                                                        //         await showDialog(
-                                                        //             context:
-                                                        //                 context,
-                                                        //             builder: (context) =>
-                                                        //                 AlertDialog(
-                                                        //                     title:
-                                                        //                         Text('Hello')));
-                                                        //       },
-                                                        //       child: Container(
-                                                        //           child: Text(
-                                                        //               'Click')));
-                                                        // },
-
+                                                        animationDuration: 2000,                                        
                                                         percent:
-                                                            (listProfile[index]
-                                                                    .points /
-                                                                1000),
+                                                            ((listProfile[index].points??=0)
+                                                            /1000),
                                                         barRadius: const Radius
                                                             .circular(16),
                                                         linearGradient:
@@ -463,6 +514,49 @@ class _ProfileViewState extends State<ProfileView> {
                                                     ),
                                                   ]),
                                             )
+                                          ]),
+                                    ),
+
+                                    //Show rewards
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.only(left: 20.0),
+                                      child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            listProfile[index].points == 1000
+                                              //if achieved 
+                                              //set points to 0
+                                                ? ElevatedButton(
+                                                    style: TextButton.styleFrom(
+                                                      primary: Color.fromARGB(255, 255, 237, 45),
+                                                      backgroundColor: Color.fromARGB(255, 13, 27, 104), 
+                                                    ),
+                                                    child: const Text('Redeem TnG Reload Pin!'),
+                                                    onPressed: () async {
+                                                      preferences = await SharedPreferences.getInstance();
+                                                      showDialog(
+                                                        context: context,
+                                                        builder: (ctxt) {
+                                                          return AlertDialog(
+                                                              title: const Text("TnG Reload Pin Code",
+                                                                textAlign:TextAlign.center,
+                                                                style:TextStyle(
+                                                                  fontFamily:'Aleo',
+                                                                  fontWeight:FontWeight.bold,
+                                                                  fontSize:20.0,
+                                                                ),
+                                                              ),
+                                                              content: redeem());
+                                                        },
+                                                      );
+                                                    },
+                                                  )
+                                                // else
+                                                : Text(''),
                                           ]),
                                     ),
 
@@ -663,6 +757,10 @@ class _ProfileViewState extends State<ProfileView> {
   }
 
   static Future<void> _onBackGroundMessage(RemoteMessage message) async {
+    print('received notification ${message.notification}');
+  }
+
+  static Future<void> _onMessage(RemoteMessage message) async {
     print('received notification ${message.notification}');
   }
 

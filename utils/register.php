@@ -19,7 +19,7 @@ if ($email==''||$password==''||$first_name==''||$last_name=='') {
 } elseif ($count == 1){
 	echo json_encode("Error");
 }else{
-	$insert = "INSERT INTO user(email,password,first_name,last_name) VALUES ('".$email."','".$password."','".$first_name."','".$last_name."')";
+	$insert = "INSERT INTO user(email,password,first_name,last_name) VALUES ('".$email."',SHA1('".$password."'),'".$first_name."','".$last_name."')";
 		$query = mysqli_query($db,$insert);
 		if($query){
 			echo json_encode("Success");

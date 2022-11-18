@@ -1,6 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.karma_app">
     <uses-permission android:name="android.permission.INTERNET" />
+    <queries>
+        <package android:name="my.com.tngdigital.ewallet" /> 
+    </queries>
    <application
         android:label="Karma"
         android:usesCleartextTraffic="true"
@@ -27,6 +30,7 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
                 <action android:name="FLUTTER_NOTIFICATION_CLICK" />
                 <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.HOME"/> 
             </intent-filter>
         </activity>
         <!-- Don't delete the meta-data below.
